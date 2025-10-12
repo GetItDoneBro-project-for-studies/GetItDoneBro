@@ -1,0 +1,6 @@
+@GetItDoneBro.Api_HostAddress = http://localhost:5216
+
+GET {{GetItDoneBro.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

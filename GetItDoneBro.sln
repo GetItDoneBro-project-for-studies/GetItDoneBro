@@ -20,6 +20,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetItDoneBro.Api", "src\GetItDoneBro.Api\GetItDoneBro.Api.csproj", "{CF037E75-AD1A-45EB-0CE0-DB9B96691FDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspire", "aspire", "{B7868369-6B46-4537-A7E8-3FBF9947AB39}"
+	ProjectSection(SolutionItems) = preProject
+		src\aspire\realms\api-realm.json = src\aspire\realms\api-realm.json
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetItDoneBro.AppHost", "src\aspire\GetItDoneBro.AppHost\GetItDoneBro.AppHost.csproj", "{1FD13F8E-3879-4B03-923C-754804AF88B6}"
 EndProject
@@ -36,6 +39,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{278703A4-84C9-4505-BA0C-3819BB56EBCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiectureTests", "tests\ArchiectureTests\ArchiectureTests.csproj", "{1E480F2D-5B57-4359-8BA9-329BF04716E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "realms", "realms", "{7F7F1A5A-201C-4E4C-AAE4-ACE4E4E96C09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +95,7 @@ Global
 		{21605E02-B850-452B-A8BA-611596D08D8C} = {4F2AE9AD-6DB3-4DD3-9136-0C794DB27746}
 		{9F9582E0-61FF-935D-4E04-489AC879D661} = {278703A4-84C9-4505-BA0C-3819BB56EBCB}
 		{1E480F2D-5B57-4359-8BA9-329BF04716E6} = {D9619BB5-9484-4F4A-82A1-5A946E970211}
+		{7F7F1A5A-201C-4E4C-AAE4-ACE4E4E96C09} = {B7868369-6B46-4537-A7E8-3FBF9947AB39}
 	EndGlobalSection
 				GlobalSection(ExtensibilityGlobals) = postSolution
 								SolutionGuid = {8D8C348D-5B39-4DB8-A474-578DB3AF9FF2}

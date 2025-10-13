@@ -4,19 +4,23 @@ IResourceBuilder<PostgresDatabaseResource> database = builder
     .AddPostgres("database")
     .WithImage("postgres:17")
     .WithBindMount("../../.containers/db", "/var/lib/postgresql/data")
+    .WithPgAdmin()
     .AddDatabase("getitdonebro");
 
 IResourceBuilder<KeycloakResource> keycloak = builder
-    .AddKeycloak("keycloak", 8080);
+    .AddKeycloak("keycloak", 8080)
+    .WithDataVolume()
+    .WithRealmImport("../realms");
 
 IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.GetItDoneBro_Api>("getitdonebro-api")
     .WithEnvironment("ConnectionStrings__Database", database)
     .WithReference(keycloak)
     .WithReference(database)
-    .WaitFor(database);
+    .WaitFor(database)
+    .WaitFor(keycloak);
 
 builder
-    .AddNpmApp("getitdonebro-frontend", "../GetItDoneBro.FrontEnd" , "dev")
+    .AddNpmApp("getitdonebro-frontend", "../GetItDoneBro.FrontEnd", "dev")
     .WithHttpsEndpoint(env: "PORT")
     .WithExternalHttpEndpoints()
     .WithReference(keycloak)

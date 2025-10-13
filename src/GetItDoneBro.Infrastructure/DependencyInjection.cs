@@ -1,5 +1,11 @@
-﻿namespace GetItDoneBro.Infrastructure;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-public class DependencyInjection
+namespace GetItDoneBro.Infrastructure;
+
+public static class DependencyInjection
 {
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    {
+        return services;
+    }
 }

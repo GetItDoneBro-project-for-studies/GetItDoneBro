@@ -9,12 +9,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Aspire.Keycloak.Authentication" />
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
@@ -22,6 +26,7 @@
     <ItemGroup>
         <ProjectReference Include="..\aspire\GetItDoneBro.ServiceDefaults\GetItDoneBro.ServiceDefaults.csproj" />
         <ProjectReference Include="..\GetItDoneBro.Application\GetItDoneBro.Application.csproj" />
+        <ProjectReference Include="..\GetItDoneBro.Infrastructure\GetItDoneBro.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

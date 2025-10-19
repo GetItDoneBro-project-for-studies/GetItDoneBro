@@ -1,4 +1,5 @@
 using GetItDoneBro.Api.Configurations;
+using GetItDoneBro.Infrastructure;
 using GetItDoneBro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,11 +18,10 @@ public static class Program
         builder.Host.CustomConfigureAppConfiguration();
         builder.AddServiceDefaults();
         
-        builder.AddNpgsqlDbContext<GetItDoneBroDbContext>("Database");
-        
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddInfrastructure(builder.Configuration);
 
         WebApplication app = builder.Build();
 
@@ -36,12 +36,8 @@ public static class Program
 
         app.UseDefaultFiles();
         app.UseStaticFiles();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        
+        app.ApplyMigrations();
 
         app.UseHttpsRedirection();
 

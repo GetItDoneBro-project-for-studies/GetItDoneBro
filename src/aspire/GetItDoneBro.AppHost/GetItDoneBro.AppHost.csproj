@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
+      <ProjectReference Include="..\..\GetItDoneBro.FrontEnd\GetItDoneBro.FrontEnd.esproj" />
     </ItemGroup>
 
     <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">

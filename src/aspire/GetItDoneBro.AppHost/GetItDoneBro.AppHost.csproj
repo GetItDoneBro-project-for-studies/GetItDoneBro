@@ -20,7 +20,7 @@
 
     <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
         <ItemGroup>
-            <PackageJsons Include="..\..\..\frontend\*\package.json" />
+            <PackageJsons Include="..\..\..\src\*\package.json" />
         </ItemGroup>
 
         <!-- Install npm packages if node_modules is missing -->

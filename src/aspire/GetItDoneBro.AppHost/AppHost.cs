@@ -3,7 +3,6 @@ IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(ar
 IResourceBuilder<PostgresDatabaseResource> database = builder
     .AddPostgres("database")
     .WithImage("postgres:17")
-    .WithBindMount("../../.containers/db", "/var/lib/postgresql/data")
     .WithPgAdmin()
     .AddDatabase("getitdonebro");
 
@@ -20,11 +19,12 @@ IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.GetItDoneBro
     .WaitFor(keycloak);
 
 builder
-    .AddNpmApp("getitdonebro-frontend", "../GetItDoneBro.FrontEnd", "dev")
-    .WithHttpsEndpoint(env: "PORT")
-    .WithExternalHttpEndpoints()
-    .WithReference(keycloak)
+    .AddNpmApp("getitdonebro-frontend", "../../frontend/GetItDoneBro.FrontEnd", "dev")
     .WithReference(api)
+    .WithReference(keycloak)
+    .WithEnvironment("BROWSER", "none")
+    .WithHttpEndpoint(env: "PORT")
+    .WithExternalHttpEndpoints()
     .WaitFor(api);
 
 builder.Build().Run();

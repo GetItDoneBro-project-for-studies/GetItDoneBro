@@ -18,4 +18,14 @@
       <ProjectReference Include="..\..\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
     </ItemGroup>
 
+    <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
+        <ItemGroup>
+            <PackageJsons Include="..\..\..\frontend\*\package.json" />
+        </ItemGroup>
+
+        <!-- Install npm packages if node_modules is missing -->
+        <Message Importance="Normal" Text="Installing npm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
+        <Exec Command="npm install" WorkingDirectory="%(PackageJsons.RootDir)%(PackageJsons.Directory)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
+    </Target>
+
 </Project>

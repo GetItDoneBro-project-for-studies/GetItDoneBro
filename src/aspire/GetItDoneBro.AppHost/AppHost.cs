@@ -19,12 +19,11 @@ IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.GetItDoneBro
     .WaitFor(keycloak);
 
 builder
-    .AddNpmApp("getitdonebro-frontend", "../../frontend/GetItDoneBro.FrontEnd", "dev")
-    .WithReference(api)
-    .WithReference(keycloak)
-    .WithEnvironment("BROWSER", "none")
-    .WithHttpEndpoint(env: "PORT")
+    .AddNpmApp("getitdonebro-frontend", "../GetItDoneBro.FrontEnd", "dev")
+    .WithHttpsEndpoint(env: "PORT")
     .WithExternalHttpEndpoints()
+    .WithReference(keycloak)
+    .WithReference(api)
     .WaitFor(api);
 
 builder.Build().Run();

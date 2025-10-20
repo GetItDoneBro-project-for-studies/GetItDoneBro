@@ -8,7 +8,8 @@
     "start": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "setup-https": "node scripts/generate-cert.js"
   },
   "dependencies": {
     "react": "^19.1.1",

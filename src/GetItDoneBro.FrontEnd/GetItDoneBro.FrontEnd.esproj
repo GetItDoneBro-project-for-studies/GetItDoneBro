@@ -5,6 +5,5 @@
     <JavaScriptTestFramework>Vitest</JavaScriptTestFramework>
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
-    <TargetFramework></TargetFramework>
   </PropertyGroup>
 </Project>

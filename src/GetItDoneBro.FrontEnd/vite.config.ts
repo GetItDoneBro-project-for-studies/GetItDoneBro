@@ -1,65 +1,89 @@
 import { fileURLToPath, URL } from "node:url";
-import fs from "fs";
-import path from "path";
-import { execSync } from "child_process";
-import os from "os";
-
 import { defineConfig } from "vite";
 import plugin from "@vitejs/plugin-react";
 import { env } from "process";
+import { spawnSync } from "child_process";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 const target =
   env["services__getitdonebro-api__https__0"] ??
   env["services__getitdonebro-api__http__0"] ??
   "https://localhost:7255";
 
-// Get or create HTTPS certificates using dotnet dev-certs
-function getHttpsConfig() {
-  const certDir = path.join(os.homedir(), ".dotnet", "corefx", "cryptography", "x509stores", "my");
-  
-  // Look for localhost certificate in .dotnet store
-  if (fs.existsSync(certDir)) {
-    try {
-      const files = fs.readdirSync(certDir);
-      if (files.length > 0) {
-        console.log("✅ Using .NET trusted certificates for localhost");
-        return true; // Let Vite use Node's built-in HTTPS support
-      }
-    } catch (e) {
-      // Silently continue
+// Function to get HTTPS certificates from .NET dev-certs
+function getHttpsCertificates(): { cert: string; key: string } | null {
+  try {
+    const certDir = path.join(os.homedir(), ".dotnet", "https");
+    
+    // Ensure directory exists
+    if (!fs.existsSync(certDir)) {
+      fs.mkdirSync(certDir, { recursive: true });
     }
+
+    const certPath = path.join(certDir, "localhost.crt");
+    const keyPath = path.join(certDir, "localhost.key");
+
+    // Export certificates if they don't exist
+    if (!fs.existsSync(certPath) || !fs.existsSync(keyPath)) {
+      console.log("🔐 Exporting .NET dev certificates...");
+      
+      // Export to PEM using dotnet CLI
+      const result = spawnSync("dotnet", [
+        "dev-certs",
+        "https",
+        "--export-path",
+        certPath,
+        "--format",
+        "Pem",
+        "--no-password"
+      ], {
+        encoding: "utf-8",
+        stdio: "pipe"
+      });
+
+      if (result.status !== 0) {
+        console.warn("⚠️ Could not export certificates:", result.stderr);
+        return null;
+      }
+
+      // Key is usually in the same file for PEM format
+      if (fs.existsSync(certPath)) {
+        const pemContent = fs.readFileSync(certPath, "utf-8");
+        
+        // Extract certificate and key from PEM file
+        const certMatch = pemContent.match(/(-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----)/);
+        const keyMatch = pemContent.match(/(-----BEGIN PRIVATE KEY-----[\s\S]*?-----END PRIVATE KEY-----)/);
+        
+        if (certMatch && keyMatch) {
+          fs.writeFileSync(certPath, certMatch[1]);
+          fs.writeFileSync(keyPath, keyMatch[1]);
+          console.log("✅ .NET dev certificates ready!");
+          return {
+            cert: certMatch[1],
+            key: keyMatch[1]
+          };
+        }
+      }
+    }
+
+    // Try to read existing certificates
+    if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+      console.log("✅ Using .NET dev certificates");
+      return {
+        cert: fs.readFileSync(certPath, "utf-8"),
+        key: fs.readFileSync(keyPath, "utf-8")
+      };
+    }
+  } catch (error) {
+    console.warn("⚠️ Error loading HTTPS certificates:", error);
   }
 
-  // Fallback: use @vitejs/plugin-basic-ssl approach with in-memory certs
-  console.log("🔒 Using auto-generated HTTPS certificates (not system-trusted)");
-  return true;
+  return null;
 }
 
-// Plugin to ensure .NET dev certs are available
-function dotnetHttpsPlugin() {
-  let certSetup = false;
-
-  return {
-    name: "dotnet-https-setup",
-    async configResolved() {
-      if (certSetup || env.SKIP_DOTNET_CERTS === "true") return;
-
-      try {
-        // Try to create/trust dev certificates using dotnet
-        console.log("🔐 Setting up .NET dev certificates...");
-        execSync("dotnet dev-certs https --trust", { stdio: "pipe" });
-        console.log("✅ .NET dev certificates ready and trusted!");
-        certSetup = true;
-      } catch (error) {
-        console.warn("⚠️  Could not setup .NET dev certs (optional)");
-        console.warn("   If you have .NET installed, run: dotnet dev-certs https --trust");
-        // This is not a fatal error - we can still run without it
-      }
-    }
-  };
-}
-
-const hasHttps = getHttpsConfig();
+const httpsConfig = getHttpsCertificates();
 
 const serverConfig: any = {
   host: true,
@@ -74,12 +98,12 @@ const serverConfig: any = {
   },
 };
 
-if (hasHttps) {
-  serverConfig.https = true;
+if (httpsConfig) {
+  serverConfig.https = httpsConfig;
 }
 
 export default defineConfig({
-  plugins: [dotnetHttpsPlugin(), plugin()],
+  plugins: [plugin()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

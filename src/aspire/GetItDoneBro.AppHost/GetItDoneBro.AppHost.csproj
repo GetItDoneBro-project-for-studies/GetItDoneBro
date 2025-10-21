@@ -16,7 +16,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
-      <ProjectReference Include="..\..\GetItDoneBro.FrontEnd\GetItDoneBro.FrontEnd.esproj" />
     </ItemGroup>
 
     <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
@@ -26,11 +25,6 @@
 
         <Message Importance="Normal" Text="Installing npm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
         <Exec Command="npm install" WorkingDirectory="%(PackageJsons.RootDir)%(PackageJsons.Directory)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
-    </Target>
-
-    <Target Name="SetupHttpsCertificates" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
-        <Message Importance="Normal" Text="Setting up HTTPS certificates for frontend..." />
-        <Exec Command="npm run setup-https" WorkingDirectory="..\..\..\src\GetItDoneBro.FrontEnd" Condition="!Exists('..\..\..\src\GetItDoneBro.FrontEnd\.certs\cert.pem')" />
     </Target>
 
 </Project>

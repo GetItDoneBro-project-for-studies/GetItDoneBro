@@ -15,12 +15,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
+      <ProjectReference Include="..\..\backend\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
     </ItemGroup>
 
     <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
         <ItemGroup>
-            <PackageJsons Include="..\..\..\src\*\package.json" />
+            <PackageJsons Include="..\..\frontend\GetItDoneBro.FrontEnd\package.json" />
         </ItemGroup>
 
         <Message Importance="Normal" Text="Installing npm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />

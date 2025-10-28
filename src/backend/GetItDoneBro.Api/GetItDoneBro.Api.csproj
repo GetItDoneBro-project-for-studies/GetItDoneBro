@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\aspire\GetItDoneBro.ServiceDefaults\GetItDoneBro.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\..\aspire\GetItDoneBro.ServiceDefaults\GetItDoneBro.ServiceDefaults.csproj" />
         <ProjectReference Include="..\GetItDoneBro.Application\GetItDoneBro.Application.csproj" />
         <ProjectReference Include="..\GetItDoneBro.Infrastructure\GetItDoneBro.Infrastructure.csproj" />
     </ItemGroup>

@@ -24,7 +24,6 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
         if (!(await keycloakService.initialize(defaultInitOptions))) {
           throw new Error("Keycloak initialization failed");
         }
-
         keycloakService.setupTokenRefresh();
         setIsInitialized(true);
         setError(null);
@@ -36,7 +35,6 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
         setIsLoading(false);
       }
     };
-
     initializeKeycloak();
   }, []);
 

@@ -9,9 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Keycloak.Authentication" />
         <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+        <PackageReference Include="Keycloak.AuthServices.Authentication" />
+        <PackageReference Include="Keycloak.AuthServices.Authorization" />
+        <PackageReference Include="Keycloak.AuthServices.Common" />
+        <PackageReference Include="Keycloak.AuthServices.Sdk" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">

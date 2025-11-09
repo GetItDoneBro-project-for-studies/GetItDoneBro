@@ -9,14 +9,18 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting.AppHost"/>
-        <PackageReference Include="Aspire.Hosting.Keycloak" />
         <PackageReference Include="Aspire.Hosting.NodeJs" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
+        <PackageReference Include="Keycloak.AuthServices.Aspire.Hosting" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\backend\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="KeycloakConfiguration\Test-users-0.json" />
     </ItemGroup>
 
     <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">

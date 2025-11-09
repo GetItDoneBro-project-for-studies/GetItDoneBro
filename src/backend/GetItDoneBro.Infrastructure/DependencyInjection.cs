@@ -13,7 +13,14 @@ public static class DependencyInjection
     private const string DefaultSchema = "public";
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.RegisterOnlyInfrastructureServices();
         services.RegisterDbContext(configuration);
+        return services;
+    }
+    
+    public static IServiceCollection RegisterOnlyInfrastructureServices(this IServiceCollection services)
+    {
+
         return services;
     }
     

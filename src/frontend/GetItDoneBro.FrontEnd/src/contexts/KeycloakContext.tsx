@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { keycloakService } from '../services/keycloakService'
 import {
 	KeycloakContext,
@@ -36,7 +36,7 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
 				setIsLoading(false)
 			}
 		}
-		initializeKeycloak()
+		void initializeKeycloak()
 	}, [])
 
 	const logout = useCallback(async () => {

@@ -41,13 +41,13 @@ class KeycloakService {
 	}
 
 	private setupKeycloakEvents() {
-		this.keycloak.onTokenExpired = () => {
-			this.updateToken()
+		this.keycloak.onTokenExpired = async () => {
+			await this.updateToken()
 		}
 
-		this.keycloak.onAuthRefreshError = () => {
+		this.keycloak.onAuthRefreshError = async () => {
 			console.error('Auth refresh error, logging out')
-			this.logoutAsync()
+			await this.logoutAsync()
 		}
 	}
 	async initialize(options: KeycloakInitOptions) {

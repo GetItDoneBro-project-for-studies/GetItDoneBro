@@ -7,7 +7,7 @@ namespace GetItDoneBro.Api;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
@@ -15,39 +15,11 @@ public static class Program
                 ApplicationName = typeof(Program).Assembly.GetName().Name
             }
         );
-        builder.Host.CustomConfigureAppConfiguration();
-        builder.AddServiceDefaults();
-        
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddInfrastructure(builder.Configuration);
+
+        builder.ConfigureServices();
 
         WebApplication app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
-        {
-            using var scope = app.Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<GetItDoneBroDbContext>();
-            dbContext.Database.Migrate();
-        }
-
-        app.MapDefaultEndpoints();
-
-        app.UseDefaultFiles();
-        app.UseStaticFiles();
-        
-        app.ApplyMigrations();
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
-
-        app.MapControllers();
-
-        app.MapFallbackToFile("/index.html");
-
-        app.Run();
+        await app.RunAsync();
     }
 }

@@ -17,8 +17,6 @@ export interface KeycloakError extends Error {
 
 export const defaultInitOptions: KeycloakInitOptions = {
   onLoad: "login-required",
-  silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
-  silentCheckSsoFallback: true,
   checkLoginIframe: false,
   pkceMethod: "S256",
   enableLogging: false,
@@ -80,7 +78,6 @@ class KeycloakService {
 
         return authenticated;
       })();
-
       return this.initPromise;
     } catch (error) {
       console.error("Failed to initialize Keycloak:", error);

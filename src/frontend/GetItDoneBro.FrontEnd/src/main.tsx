@@ -4,6 +4,7 @@ import App from "./App";
 import { KeycloakProvider } from "./contexts/KeycloakContext";
 import "./index.css";
 
+// test
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <KeycloakProvider>

@@ -35,6 +35,7 @@ class KeycloakService {
   private keycloak: Keycloak;
   private refreshInterval: number | null = null;
   private initialized = false;
+  private initPromise: Promise<boolean> | null = null;
 
   constructor() {
     this.keycloak = new Keycloak(keycloakConfig);
@@ -51,21 +52,39 @@ class KeycloakService {
       this.logoutAsync();
     };
   }
-
   async initialize(options: KeycloakInitOptions) {
     try {
-      const authenticated = await this.keycloak.init(options);
-      this.initialized = true;
-
-      if (!authenticated) {
-        console.warn("Not authenticated");
-        await this.keycloak.login();
-        return false;
+      if (this.initialized) {
+        return this.keycloak.authenticated ?? false;
       }
 
-      return authenticated;
+      if (this.initPromise) {
+        return this.initPromise;
+      }
+
+      if (this.keycloak.authenticated) {
+        this.initialized = true;
+        return true;
+      }
+
+      this.initPromise = (async () => {
+        const authenticated = await this.keycloak.init(options);
+        this.initialized = true;
+        this.initPromise = null;
+
+        if (!authenticated) {
+          console.warn("Not authenticated");
+          await this.keycloak.login();
+          return false;
+        }
+
+        return authenticated;
+      })();
+
+      return this.initPromise;
     } catch (error) {
       console.error("Failed to initialize Keycloak:", error);
+      this.initPromise = null;
       throw error;
     }
   }

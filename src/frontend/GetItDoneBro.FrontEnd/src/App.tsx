@@ -1,11 +1,13 @@
-import "./App.css";
 import { KeycloakGuard } from "./components/KeycloakGuard";
 import { useAuth } from "./hooks/useAuth";
 function App() {
   const { getUserProfile } = useAuth();
   return (
     <KeycloakGuard>
-      dziala zalogowano jako: {getUserProfile().name}
+      <p>
+        Działa, zalogowano jako:
+        <span style={{ fontWeight: 600 }}> {getUserProfile().name}</span>
+      </p>
     </KeycloakGuard>
   );
 }

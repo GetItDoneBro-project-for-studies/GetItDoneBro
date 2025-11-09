@@ -1,11 +1,12 @@
-import { fileURLToPath, URL } from 'node:url'
-import { defineConfig, type ServerOptions } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { env } from 'process'
 import { spawnSync } from 'child_process'
 import fs from 'fs'
-import path from 'path'
+import { fileURLToPath, URL } from 'node:url'
 import os from 'os'
+import path from 'path'
+import { env } from 'process'
+import { defineConfig, type ServerOptions } from 'vite'
 
 const target =
 	env['services__getitdonebro-api__https__0'] ??
@@ -111,7 +112,7 @@ if (httpsConfig) {
 }
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [react(), tailwindcss()],
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),

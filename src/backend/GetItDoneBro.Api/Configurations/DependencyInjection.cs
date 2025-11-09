@@ -1,7 +1,6 @@
 ﻿using GetItDoneBro.Infrastructure;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
-using Keycloak.AuthServices.Sdk;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace GetItDoneBro.Api.Configurations;

@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
-import plugin from "@vitejs/plugin-react";
+import { defineConfig, type ServerOptions } from "vite";
+import react from "@vitejs/plugin-react";
 import { env } from "process";
 import { spawnSync } from "child_process";
 import fs from "fs";
@@ -16,7 +16,7 @@ const target =
 function getHttpsCertificates(): { cert: string; key: string } | null {
   try {
     const certDir = path.join(os.homedir(), ".dotnet", "https");
-    
+
     // Ensure directory exists
     if (!fs.existsSync(certDir)) {
       fs.mkdirSync(certDir, { recursive: true });
@@ -28,20 +28,24 @@ function getHttpsCertificates(): { cert: string; key: string } | null {
     // Export certificates if they don't exist
     if (!fs.existsSync(certPath) || !fs.existsSync(keyPath)) {
       console.log("🔐 Exporting .NET dev certificates...");
-      
+
       // Export to PEM using dotnet CLI
-      const result = spawnSync("dotnet", [
-        "dev-certs",
-        "https",
-        "--export-path",
-        certPath,
-        "--format",
-        "Pem",
-        "--no-password"
-      ], {
-        encoding: "utf-8",
-        stdio: "pipe"
-      });
+      const result = spawnSync(
+        "dotnet",
+        [
+          "dev-certs",
+          "https",
+          "--export-path",
+          certPath,
+          "--format",
+          "Pem",
+          "--no-password",
+        ],
+        {
+          encoding: "utf-8",
+          stdio: "pipe",
+        }
+      );
 
       if (result.status !== 0) {
         console.warn("⚠️ Could not export certificates:", result.stderr);
@@ -51,18 +55,22 @@ function getHttpsCertificates(): { cert: string; key: string } | null {
       // Key is usually in the same file for PEM format
       if (fs.existsSync(certPath)) {
         const pemContent = fs.readFileSync(certPath, "utf-8");
-        
+
         // Extract certificate and key from PEM file
-        const certMatch = pemContent.match(/(-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----)/);
-        const keyMatch = pemContent.match(/(-----BEGIN PRIVATE KEY-----[\s\S]*?-----END PRIVATE KEY-----)/);
-        
+        const certMatch = pemContent.match(
+          /(-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----)/
+        );
+        const keyMatch = pemContent.match(
+          /(-----BEGIN PRIVATE KEY-----[\s\S]*?-----END PRIVATE KEY-----)/
+        );
+
         if (certMatch && keyMatch) {
           fs.writeFileSync(certPath, certMatch[1]);
           fs.writeFileSync(keyPath, keyMatch[1]);
           console.log("✅ .NET dev certificates ready!");
           return {
             cert: certMatch[1],
-            key: keyMatch[1]
+            key: keyMatch[1],
           };
         }
       }
@@ -73,7 +81,7 @@ function getHttpsCertificates(): { cert: string; key: string } | null {
       console.log("✅ Using .NET dev certificates");
       return {
         cert: fs.readFileSync(certPath, "utf-8"),
-        key: fs.readFileSync(keyPath, "utf-8")
+        key: fs.readFileSync(keyPath, "utf-8"),
       };
     }
   } catch (error) {
@@ -85,7 +93,7 @@ function getHttpsCertificates(): { cert: string; key: string } | null {
 
 const httpsConfig = getHttpsCertificates();
 
-const serverConfig: any = {
+const serverConfig: ServerOptions = {
   host: true,
   port: parseInt(env.PORT ?? "5173"),
   proxy: {
@@ -103,7 +111,7 @@ if (httpsConfig) {
 }
 
 export default defineConfig({
-  plugins: [plugin()],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

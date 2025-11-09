@@ -8,7 +8,9 @@ function App() {
         Działa, zalogowano jako:
         <span style={{ fontWeight: 600 }}> {getUserProfile().name}</span>
       </p>
-      <button onClick={logout}>logout</button>
+      <button type="button" onClick={logout}>
+        logout
+      </button>
     </KeycloakGuard>
   );
 }

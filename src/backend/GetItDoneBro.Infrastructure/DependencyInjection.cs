@@ -1,5 +1,7 @@
-﻿using GetItDoneBro.Domain.Interfaces;
+﻿using GetItDoneBro.Application.Common.Interfaces;
+using GetItDoneBro.Domain.Interfaces;
 using GetItDoneBro.Infrastructure.Persistence;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -20,6 +22,12 @@ public static class DependencyInjection
     
     public static IServiceCollection RegisterOnlyInfrastructureServices(this IServiceCollection services)
     {
+        // services
+        //     .AddHttpClient<ITokenService, TokenService>((_, client) =>
+        //         {
+        //             client.Timeout = TimeSpan.FromMinutes(2);
+        //         }
+        //     );
 
         return services;
     }

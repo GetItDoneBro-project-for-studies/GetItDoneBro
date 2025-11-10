@@ -1,6 +1,6 @@
-import * as React from 'react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
+import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -14,7 +14,10 @@ function DropdownMenuPortal({
 	...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
 	return (
-		<DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
+		<DropdownMenuPrimitive.Portal
+			data-slot="dropdown-menu-portal"
+			{...props}
+		/>
 	)
 }
 
@@ -53,7 +56,10 @@ function DropdownMenuGroup({
 	...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
 	return (
-		<DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
+		<DropdownMenuPrimitive.Group
+			data-slot="dropdown-menu-group"
+			{...props}
+		/>
 	)
 }
 
@@ -193,7 +199,9 @@ function DropdownMenuShortcut({
 function DropdownMenuSub({
 	...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
-	return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
+	return (
+		<DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
+	)
 }
 
 function DropdownMenuSubTrigger({
@@ -238,18 +246,18 @@ function DropdownMenuSubContent({
 
 export {
 	DropdownMenu,
-	DropdownMenuPortal,
-	DropdownMenuTrigger,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuGroup,
-	DropdownMenuLabel,
 	DropdownMenuItem,
-	DropdownMenuCheckboxItem,
+	DropdownMenuLabel,
+	DropdownMenuPortal,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuSeparator,
 	DropdownMenuShortcut,
 	DropdownMenuSub,
-	DropdownMenuSubTrigger,
 	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger,
 }

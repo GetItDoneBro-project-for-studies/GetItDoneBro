@@ -28,7 +28,8 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
 				setIsInitialized(true)
 				setError(null)
 			} catch (err) {
-				const error = err instanceof Error ? err : new Error(String(err))
+				const error =
+					err instanceof Error ? err : new Error(String(err))
 				console.error('Failed to initialize Keycloak:', error)
 				setError(error)
 			} finally {

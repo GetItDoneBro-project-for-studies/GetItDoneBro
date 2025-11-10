@@ -1,4 +1,4 @@
-import { LoaderCircle } from 'lucide-react'
+import { Spinner } from './ui/spinner'
 
 type LoadingSkeletonProps = {
 	message?: string
@@ -10,7 +10,7 @@ export default function LoaderSkeleton({
 	return (
 		<div className="text-muted-foreground flex animate-pulse items-center gap-2">
 			<span>{message}</span>
-			<LoaderCircle className="size-5 animate-spin" />
+			<Spinner />
 		</div>
 	)
 }

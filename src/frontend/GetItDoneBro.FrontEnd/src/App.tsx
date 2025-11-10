@@ -7,6 +7,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
+import { toast, Toaster } from 'sonner'
 import { getUsersAsync } from './api/users'
 import { User } from './api/users/types'
 import { KeycloakGuard } from './components/KeycloakGuard'
@@ -21,6 +22,31 @@ function App() {
 	const [users, setUsers] = useState<User[]>([])
 	const [isLoadingUsers, setIsLoadingUsers] = useState(false)
 
+	function showToast() {
+		toast('Event has been created.')
+	}
+	function toastPromise(shouldReject: boolean) {
+		return () => {
+			toast.promise<{ name: string }>(
+				() =>
+					new Promise((resolve, reject) =>
+						setTimeout(
+							() =>
+								shouldReject
+									? reject(new Error('Error'))
+									: resolve({ name: 'Event' }),
+							2000
+						)
+					),
+				{
+					loading: 'Loading...',
+					success: (data) => `${data.name} has been created`,
+					error: 'Error',
+				}
+			)
+		}
+	}
+
 	useEffect(() => {
 		const fetchUsers = async () => {
 			try {
@@ -32,7 +58,7 @@ function App() {
 			}
 		}
 
-		fetchUsers()
+		void fetchUsers()
 	}, [])
 
 	const userProfiles = users.map((user) => {
@@ -70,10 +96,22 @@ function App() {
 						<Button type="button" onClick={logout}>
 							logout
 						</Button>
+						<Button type="button" onClick={showToast}>
+							toast
+						</Button>
+						<Button
+							variant="destructive"
+							onClick={toastPromise(true)}
+						>
+							Promise
+						</Button>
+						<Button onClick={toastPromise(false)}>Promise</Button>
 						<ThemeToggle />
 					</CardFooter>
 				</Card>
 			</KeycloakGuard>
+
+			<Toaster closeButton richColors />
 		</ThemeProvider>
 	)
 }

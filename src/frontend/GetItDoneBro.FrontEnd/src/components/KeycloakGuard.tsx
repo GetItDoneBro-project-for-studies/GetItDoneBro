@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { useKeycloak } from '../contexts/useKeycloakContext'
+import LoaderSkeleton from './LoaderSkeleton'
 
 interface KeycloakGuardProps {
 	children: ReactNode
@@ -10,7 +11,7 @@ export const KeycloakGuard = ({
 	children,
 	fallback = (
 		<div className="flex min-h-screen items-center justify-center">
-			Loading...
+			<LoaderSkeleton />
 		</div>
 	),
 }: KeycloakGuardProps) => {

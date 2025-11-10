@@ -6,13 +6,45 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import { useEffect, useState } from 'react'
+import { getUsersAsync } from './api/users'
+import { User } from './api/users/types'
 import { KeycloakGuard } from './components/KeycloakGuard'
+import LoaderSkeleton from './components/LoaderSkeleton'
 import { ThemeToggle } from './components/ThemeToggle'
 import { Button } from './components/ui/button'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { useAuth } from './hooks/useAuth'
 function App() {
 	const { getUserProfile, logout } = useAuth()
+
+	const [users, setUsers] = useState<User[]>([])
+	const [isLoadingUsers, setIsLoadingUsers] = useState(false)
+
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				setIsLoadingUsers(true)
+				const users = await getUsersAsync()
+				setUsers(users.data)
+			} finally {
+				setIsLoadingUsers(false)
+			}
+		}
+
+		fetchUsers()
+	}, [])
+
+	const userProfiles = users.map((user) => {
+		return (
+			<div key={user.id}>
+				<p>
+					<strong>{user.username}</strong> - {user.email}
+				</p>
+			</div>
+		)
+	})
+
 	return (
 		<ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
 			<KeycloakGuard>
@@ -26,6 +58,8 @@ function App() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
+						{isLoadingUsers ? <LoaderSkeleton /> : userProfiles}
+						<br />
 						Lorem ipsum dolor sit amet, consectetur adipisicing
 						elit. Ut, architecto, itaque aut repudiandae
 						perspiciatis sed tenetur aliquid officiis, voluptates

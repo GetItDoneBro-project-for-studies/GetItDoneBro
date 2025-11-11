@@ -1,4 +1,5 @@
-﻿using GetItDoneBro.Infrastructure;
+﻿using System.Reflection;
+using GetItDoneBro.Infrastructure;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,6 +16,9 @@ public static class DependencyInjection
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddInfrastructure(builder.Configuration);
+        
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
         
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

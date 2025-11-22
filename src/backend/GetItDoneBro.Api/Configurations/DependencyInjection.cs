@@ -1,11 +1,9 @@
 ﻿using System.Reflection;
 using GetItDoneBro.Application;
-using GetItDoneBro.Domain.Options;
 using GetItDoneBro.Infrastructure;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 
 namespace GetItDoneBro.Api.Configurations;
 
@@ -20,11 +18,8 @@ public static class DependencyInjection
         builder.Services.AddSwaggerGen();
         builder.Services.AddInfrastructure(builder.Configuration);
         
-        // Configure MediatrLicenseOptions and add Application layer services
-        builder.Services.Configure<MediatrLicenseOptions>(
-            builder.Configuration.GetSection(MediatrLicenseOptions.ConfigSectionPath));
-        var mediatrOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<MediatrLicenseOptions>>();
-        builder.Services.AddApplication(mediatrOptions);
+        // Add Application layer services with MediatR configuration
+        builder.Services.AddApplication(builder.Configuration);
 
         
         builder.Services

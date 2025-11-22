@@ -16,7 +16,7 @@ public class ProjectRepository : IProjectRepository
     public async Task<Project> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         var task = await context.FindAsync<Project>(new object[] { id }, cancellationToken);
-        return task ?? throw new ArgumentNullException($"Project with id {id} not found");
+        return task ?? throw new KeyNotFoundException($"Project with id {id} not found");
     }
 
     public async Task AddAsync(Project project, CancellationToken cancellationToken)

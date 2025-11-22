@@ -10,16 +10,10 @@ public class GetProjectQueryHandler(IProjectRepository projectRepository) : IQue
     {
         var project = await projectRepository.GetByIdAsync(request.Id, cancellationToken);
 
-        if (project is null)
-        {
-            throw new KeyNotFoundException($"Project with id {request.Id} not found");
-        }
-
         return new ProjectDto()
         {
             Id = project.Id,
             Name = project.Name,
-            
             Description = project.Description,
             CreatedAt = project.CreatedAt,
         };

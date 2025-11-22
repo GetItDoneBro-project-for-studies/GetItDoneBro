@@ -1,9 +1,9 @@
-namespace GetItDoneBro.Application.Usecases.Projects.DtoS;
+namespace GetItDoneBro.Domain.Entities;
 
-public class ProjectDto
+public class Project
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; }
 }

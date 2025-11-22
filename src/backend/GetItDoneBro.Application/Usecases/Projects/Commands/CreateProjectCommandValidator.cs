@@ -13,6 +13,6 @@ public class CreateProjectCommandValidator : AbstractValidator<CreateProjectComm
 
         RuleFor(x => x.Description)
             .MaximumLength(Project.MaxDescriptionLength)
-            .WithMessage($"Description cannot exceed {Project.MaxDescriptionLength} characters.");
+            .WithMessage(x => $"Description cannot exceed {Project.MaxDescriptionLength} characters.");
     }
 }

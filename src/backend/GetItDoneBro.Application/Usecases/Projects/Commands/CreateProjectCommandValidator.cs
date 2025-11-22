@@ -1,4 +1,5 @@
 using FluentValidation;
+using GetItDoneBro.Domain.Entities;
 
 namespace GetItDoneBro.Application.Usecases.Projects.Commands;
 
@@ -11,7 +12,7 @@ public class CreateProjectCommandValidator : AbstractValidator<CreateProjectComm
             .WithMessage("Project name is required.");
 
         RuleFor(x => x.Description)
-            .MaximumLength(300)
-            .WithMessage("Description cannot exceed 300 characters.");
+            .MaximumLength(Project.MaxDescriptionLength)
+            .WithMessage($"Description cannot exceed {Project.MaxDescriptionLength} characters.");
     }
 }

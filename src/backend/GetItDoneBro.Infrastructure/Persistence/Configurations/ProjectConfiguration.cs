@@ -12,7 +12,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.Name)
             .IsRequired();
         builder.Property(p => p.Description)
-            .HasMaxLength(300);
+            .HasMaxLength(Project.MaxDescriptionLength);
         builder.Property(p => p.CreatedAt)
             .HasColumnType("timestamp with time zone");
     }

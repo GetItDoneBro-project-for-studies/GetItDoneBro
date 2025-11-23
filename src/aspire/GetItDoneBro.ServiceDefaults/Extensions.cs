@@ -122,6 +122,12 @@ public static class Extensions
             });
         }
 
+        // Map health checks endpoint at /api/health/live
+        app.MapHealthChecks("/api/health/live", new HealthCheckOptions
+        {
+            Predicate = r => r.Tags.Contains("live")
+        });
+
         return app;
     }
 }

@@ -1,36 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Aspire.AppHost.Sdk/13.0.0">
 
-    <Sdk Name="Aspire.AppHost.Sdk" Version="9.4.1"/>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>3082dd04-5a69-46ab-9654-29bf81190dfa</UserSecretsId>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <UserSecretsId>2bce8cce-5108-4287-a40f-00ce0e4cdfe6</UserSecretsId>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost"/>
-        <PackageReference Include="Aspire.Hosting.Keycloak" />
-        <PackageReference Include="Aspire.Hosting.NodeJs" />
-        <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
-      <ProjectReference Include="..\..\GetItDoneBro.FrontEnd\GetItDoneBro.FrontEnd.esproj" />
-    </ItemGroup>
-
-    <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
-        <ItemGroup>
-            <PackageJsons Include="..\..\..\src\*\package.json" />
-        </ItemGroup>
-
-        <Message Importance="Normal" Text="Installing npm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
-        <Exec Command="npm install" WorkingDirectory="%(PackageJsons.RootDir)%(PackageJsons.Directory)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
-    </Target>
-
-    <Target Name="SetupHttpsCertificates" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
-        <Message Importance="Normal" Text="Setting up HTTPS certificates for frontend..." />
-        <Exec Command="npm run setup-https" WorkingDirectory="..\..\..\src\GetItDoneBro.FrontEnd" Condition="!Exists('..\..\..\src\GetItDoneBro.FrontEnd\.certs\cert.pem')" />
-    </Target>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Keycloak" />
+  </ItemGroup>
 
 </Project>

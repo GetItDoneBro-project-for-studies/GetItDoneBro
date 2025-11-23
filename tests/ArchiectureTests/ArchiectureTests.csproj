@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\aspire\GetItDoneBro.AppHost\GetItDoneBro.AppHost.csproj" />
         <ProjectReference Include="..\..\src\GetItDoneBro.Domain\GetItDoneBro.Domain.csproj"/>
         <ProjectReference Include="..\..\src\GetItDoneBro.Application\GetItDoneBro.Application.csproj"/>
         <ProjectReference Include="..\..\src\GetItDoneBro.Infrastructure\GetItDoneBro.Infrastructure.csproj"/>

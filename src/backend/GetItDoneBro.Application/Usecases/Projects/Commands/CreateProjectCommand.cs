@@ -6,5 +6,5 @@ namespace GetItDoneBro.Application.Usecases.Projects.Commands;
 public class CreateProjectCommand : ICommand<ProjectDto>
 {
     public string Name { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
 }

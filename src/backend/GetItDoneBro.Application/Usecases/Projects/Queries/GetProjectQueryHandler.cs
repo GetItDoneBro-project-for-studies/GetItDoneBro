@@ -9,12 +9,7 @@ public class GetProjectQueryHandler(IProjectRepository projectRepository) : IQue
     public async Task<ProjectDto> Handle(GetProjectQuery request, CancellationToken cancellationToken)
     {
         var project = await projectRepository.GetByIdAsync(request.Id, cancellationToken);
-
-        if (project is null)
-        {
-            throw new KeyNotFoundException($"Project with id {request.Id} not found");
-        }
-
+        
         return new ProjectDto()
         {
             Id = project.Id,

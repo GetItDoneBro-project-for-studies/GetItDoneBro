@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using GetItDoneBro.Application;
 using GetItDoneBro.Infrastructure;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -16,8 +17,8 @@ public static class DependencyInjection
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddInfrastructure(builder.Configuration);
-        
-        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+       
 
         
         builder.Services

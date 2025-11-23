@@ -1,7 +1,7 @@
 ﻿using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Domain.Interfaces;
 using GetItDoneBro.Infrastructure.Persistence;
-
+using GetItDoneBro.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -28,7 +28,8 @@ public static class DependencyInjection
         //             client.Timeout = TimeSpan.FromMinutes(2);
         //         }
         //     );
-
+        
+        services.AddScoped<IProjectRepository, ProjectRepository>();
         return services;
     }
     

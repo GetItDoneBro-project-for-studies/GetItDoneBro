@@ -9,12 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" />
     <PackageReference Include="Aspire.Hosting.Keycloak" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
+    <ProjectReference Include="..\..\GetItDoneBro.FrontEnd\GetItDoneBro.FrontEnd.esproj" />
   </ItemGroup>
 
 </Project>

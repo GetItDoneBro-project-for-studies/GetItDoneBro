@@ -4,7 +4,6 @@
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
       "applicationUrl": "https://localhost:17060;http://localhost:15205",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
@@ -17,11 +16,11 @@
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
       "applicationUrl": "http://localhost:15205",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
+        "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
         "ASPIRE_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:19053",
         "ASPIRE_DASHBOARD_MCP_ENDPOINT_URL": "http://localhost:18190",
         "ASPIRE_RESOURCE_SERVICE_ENDPOINT_URL": "http://localhost:20109"

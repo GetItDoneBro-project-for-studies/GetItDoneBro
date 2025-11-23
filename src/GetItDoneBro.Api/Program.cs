@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 using GetItDoneBro.Api.Configurations;
 using GetItDoneBro.Infrastructure;
 using GetItDoneBro.Infrastructure.Persistence;
@@ -9,7 +10,7 @@ namespace GetItDoneBro.Api;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
@@ -19,44 +20,42 @@ public static class Program
         );
         builder.Host.CustomConfigureAppConfiguration();
         builder.AddServiceDefaults();
+        builder.RegisterDatabase();
         
         builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddOpenApi();
         builder.Services.AddHealthChecks()
             .AddCheck("live", () => HealthCheckResult.Healthy(), tags: ["live"]);
-        builder.Services.AddInfrastructure(builder.Configuration);
+        builder.Services.AddInfrastructure();
 
         WebApplication app = builder.Build();
 
+        app.UseFileServer();
+
         if (app.Environment.IsDevelopment())
         {
-            using var scope = app.Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<GetItDoneBroDbContext>();
-            dbContext.Database.Migrate();
+            // Map OpenAPI and Scalar
+            app.MapOpenApi();
+            app.MapScalarApiReference();
         }
 
         app.MapDefaultEndpoints();
-
-        app.MapHealthChecks("/api/health/live", new HealthCheckOptions
-        {
-            Predicate = r => r.Tags.Contains("live")
-        });
-
-        app.UseDefaultFiles();
-        app.UseStaticFiles();
-        
-        app.ApplyMigrations();
 
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
 
-
         app.MapControllers();
 
         app.MapFallbackToFile("/index.html");
+        
+        // Apply migrations at startup
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<GetItDoneBroDbContext>();
+            await dbContext.Database.MigrateAsync();
+        }
 
-        app.Run();
+        await app.RunAsync();
     }
 }

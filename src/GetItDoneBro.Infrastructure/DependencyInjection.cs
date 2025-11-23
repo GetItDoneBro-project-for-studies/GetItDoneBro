@@ -2,19 +2,32 @@
 using GetItDoneBro.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace GetItDoneBro.Infrastructure;
 
 public static class DependencyInjection
 {
-    private const string DefaultSchema = "public";
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.RegisterDbContext(configuration);
+        services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
         return services;
+    }
+
+    public static IHostApplicationBuilder RegisterDatabase(this IHostApplicationBuilder builder)
+    {
+        builder.AddNpgsqlDataSource("DataBase");
+        
+        builder.Services.AddDbContext<GetItDoneBroDbContext>((serviceProvider, options) =>
+        {
+            var dataSource = serviceProvider.GetRequiredService<Npgsql.NpgsqlDataSource>();
+            options.UseNpgsql(dataSource);
+            options.UseSnakeCaseNamingConvention();
+        });
+
+        return builder;
     }
     
     public static WebApplication ApplyMigrations(this WebApplication webApplication)
@@ -27,18 +40,5 @@ public static class DependencyInjection
         }
 
         return webApplication;
-    }
-    private static void RegisterDbContext(this IServiceCollection services, IConfiguration configuration)
-    {
-        string? connectionString = configuration.GetConnectionString("Database");
-
-        services.AddDbContext<GetItDoneBroDbContext>(
-            options => options
-                .UseNpgsql(connectionString, npgsqlOptions =>
-                    npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, DefaultSchema))
-                .UseSnakeCaseNamingConvention());
-
-        services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
-        
     }
 }

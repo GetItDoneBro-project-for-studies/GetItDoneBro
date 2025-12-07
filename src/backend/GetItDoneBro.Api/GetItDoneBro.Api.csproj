@@ -10,6 +10,8 @@
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+        <PackageReference Include="Keycloak.AuthServices.Authentication" />
+        <PackageReference Include="Keycloak.AuthServices.Authorization" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
@@ -22,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\aspire\GetItDoneBro.ServiceDefaults\GetItDoneBro.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\..\aspire\GetItDoneBro.ServiceDefaults\GetItDoneBro.ServiceDefaults.csproj" />
         <ProjectReference Include="..\GetItDoneBro.Application\GetItDoneBro.Application.csproj" />
         <ProjectReference Include="..\GetItDoneBro.Infrastructure\GetItDoneBro.Infrastructure.csproj" />
     </ItemGroup>

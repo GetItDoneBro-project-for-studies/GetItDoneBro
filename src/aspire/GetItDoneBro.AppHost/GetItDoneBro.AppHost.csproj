@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
-    <ProjectReference Include="..\..\GetItDoneBro.FrontEnd\GetItDoneBro.FrontEnd.esproj" />
+    <ProjectReference Include="..\..\backend\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
+    <ProjectReference Include="..\..\frontend\GetItDoneBro.FrontEnd\GetItDoneBro.FrontEnd.esproj" />
   </ItemGroup>
 
 </Project>

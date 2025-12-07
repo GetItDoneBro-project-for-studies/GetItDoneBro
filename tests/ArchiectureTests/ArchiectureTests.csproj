@@ -22,10 +22,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\GetItDoneBro.Domain\GetItDoneBro.Domain.csproj"/>
-        <ProjectReference Include="..\..\src\GetItDoneBro.Application\GetItDoneBro.Application.csproj"/>
-        <ProjectReference Include="..\..\src\GetItDoneBro.Infrastructure\GetItDoneBro.Infrastructure.csproj"/>
-        <ProjectReference Include="..\..\src\GetItDoneBro.Api\GetItDoneBro.Api.csproj"/>
+        <ProjectReference Include="..\..\src\backend\GetItDoneBro.Domain\GetItDoneBro.Domain.csproj"/>
+        <ProjectReference Include="..\..\src\backend\GetItDoneBro.Application\GetItDoneBro.Application.csproj"/>
+        <ProjectReference Include="..\..\src\backend\GetItDoneBro.Infrastructure\GetItDoneBro.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\src\backend\GetItDoneBro.Api\GetItDoneBro.Api.csproj"/>
     </ItemGroup>
 
 </Project>

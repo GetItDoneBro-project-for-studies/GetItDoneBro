@@ -18,14 +18,17 @@
         <Project Path="src/aspire/GetItDoneBro.AppHost/GetItDoneBro.AppHost.csproj" />
     </Folder>
 
-    <Folder Name="/src/">
-        <Project Path="src/GetItDoneBro.Api/GetItDoneBro.Api.csproj" />
-        <Project Path="src/GetItDoneBro.Application/GetItDoneBro.Application.csproj" />
-        <Project Path="src/GetItDoneBro.Domain/GetItDoneBro.Domain.csproj" />
-        <Project Path="src/GetItDoneBro.FrontEnd/GetItDoneBro.FrontEnd.esproj">
+    <Folder Name="/src/backend/">
+        <Project Path="src/backend/GetItDoneBro.Api/GetItDoneBro.Api.csproj" />
+        <Project Path="src/backend/GetItDoneBro.Application/GetItDoneBro.Application.csproj" />
+        <Project Path="src/backend/GetItDoneBro.Domain/GetItDoneBro.Domain.csproj" />
+        <Project Path="src/backend/GetItDoneBro.Infrastructure/GetItDoneBro.Infrastructure.csproj" />
+    </Folder>
+
+    <Folder Name="/src/frontend/">
+        <Project Path="src/frontend/GetItDoneBro.FrontEnd/GetItDoneBro.FrontEnd.esproj">
             <Build Solution="*|Any CPU" />
         </Project>
-        <Project Path="src/GetItDoneBro.Infrastructure/GetItDoneBro.Infrastructure.csproj" />
     </Folder>
 
     <Folder Name="/tests/">

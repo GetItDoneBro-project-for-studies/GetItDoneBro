@@ -1,0 +1,14 @@
+{
+	"recommendations": [
+		"esbenp.prettier-vscode",
+		"christian-kohler.path-intellisense",
+		"christian-kohler.npm-intellisense",
+		"oxc.oxc-vscode",
+		"YoavBls.pretty-ts-errors",
+		"nrjdalal.shadcn-ui-next",
+		"bradlc.vscode-tailwindcss",
+		"wix.vscode-import-cost",
+		"usernamehw.errorlens",
+		"steoates.autoimport"
+	]
+}

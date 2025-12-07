@@ -1,35 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Aspire.AppHost.Sdk/13.0.2">
 
-    <Sdk Name="Aspire.AppHost.Sdk" Version="9.4.1"/>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>3082dd04-5a69-46ab-9654-29bf81190dfa</UserSecretsId>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <UserSecretsId>2bce8cce-5108-4287-a40f-00ce0e4cdfe6</UserSecretsId>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" />
+    <PackageReference Include="Aspire.Hosting.Keycloak" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost"/>
-        <PackageReference Include="Aspire.Hosting.NodeJs" />
-        <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
-        <PackageReference Include="Keycloak.AuthServices.Aspire.Hosting" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\backend\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="KeycloakConfiguration\Test-users-0.json" />
-    </ItemGroup>
-
-    <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
-        <ItemGroup>
-            <PackageJsons Include="..\..\frontend\GetItDoneBro.FrontEnd\package.json" />
-        </ItemGroup>
-
-        <Message Importance="Normal" Text="Installing npm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
-        <Exec Command="npm install" WorkingDirectory="%(PackageJsons.RootDir)%(PackageJsons.Directory)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
-    </Target>
+  <ItemGroup>
+    <ProjectReference Include="..\..\backend\GetItDoneBro.Api\GetItDoneBro.Api.csproj" />
+    <ProjectReference Include="..\..\frontend\GetItDoneBro.FrontEnd\GetItDoneBro.FrontEnd.esproj" />
+  </ItemGroup>
 
 </Project>

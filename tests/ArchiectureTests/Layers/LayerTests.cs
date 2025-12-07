@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using GetItDoneBro.Api;
+using GetItDoneBro.Api.Configurations;
 using GetItDoneBro.Domain;
 
 namespace TestProject1.Layers;

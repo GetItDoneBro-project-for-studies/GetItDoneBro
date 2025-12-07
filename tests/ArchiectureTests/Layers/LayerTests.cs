@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
-using GetItDoneBro.Api;
 using GetItDoneBro.Api.Configurations;
-using GetItDoneBro.Domain;
 
 namespace TestProject1.Layers;
 
@@ -10,7 +8,7 @@ public class LayerTests
     private static readonly Assembly DomainAssembly = typeof(DependencyInjection).Assembly;
     private static readonly Assembly ApplicationAssembly = typeof(GetItDoneBro.Application.DependencyInjection).Assembly;
     private static readonly Assembly InfrastructureAssembly = typeof(GetItDoneBro.Infrastructure.DependencyInjection).Assembly;
-    private static readonly Assembly PresentationAssembly = typeof(Program).Assembly;
+    private static readonly Assembly PresentationAssembly = typeof(GetItDoneBro.Api.Program).Assembly;
 
     [Fact]
     public void Domain_Should_NotHaveDependencyOnApplication()

@@ -9,11 +9,10 @@ namespace GetItDoneBro.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services, IOptions<MediatrLicenseOptions> options)
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddMediatR(cfg =>
             {
-                cfg.LicenseKey = options.Value.LicenseKey;
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             }

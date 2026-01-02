@@ -403,3 +403,5 @@ FodyWeavers.xsd
 /.idea/.idea.GetItDoneBro/.idea/discord.xml
 /src/aspire/GetItDoneBro.AppHost/.aspire/settings.json
 /CLAUDE.md
+
+/.idea

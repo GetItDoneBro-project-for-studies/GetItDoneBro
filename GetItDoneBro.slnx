@@ -26,9 +26,7 @@
     </Folder>
 
     <Folder Name="/src/frontend/">
-        <Project Path="src/frontend/GetItDoneBro.FrontEnd/GetItDoneBro.FrontEnd.esproj">
-            <Build Solution="*|Any CPU" />
-        </Project>
+        <Project Path="src/frontend/GetItDoneBro.FrontEnd/GetItDoneBro.FrontEnd.esproj" />
     </Folder>
 
     <Folder Name="/tests/">

@@ -24,7 +24,6 @@ public static class DependencyInjection
         {
             var dataSource = serviceProvider.GetRequiredService<Npgsql.NpgsqlDataSource>();
             options.UseNpgsql(dataSource);
-            options.UseSnakeCaseNamingConvention();
         });
 
         return builder;

@@ -400,3 +400,5 @@ FodyWeavers.xsd
 .containers/
 /src/GetItDoneBro.FrontEnd/.certs/cert.pem
 /src/GetItDoneBro.FrontEnd/.certs/key.pem
+/.idea/.idea.GetItDoneBro/.idea/discord.xml
+/src/aspire/GetItDoneBro.AppHost/.aspire/settings.json

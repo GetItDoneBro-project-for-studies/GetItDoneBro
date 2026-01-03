@@ -394,6 +394,11 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 # JetBrains Rider
 *.sln.iml
 
@@ -402,3 +407,7 @@ FodyWeavers.xsd
 /src/GetItDoneBro.FrontEnd/.certs/key.pem
 /.idea/.idea.GetItDoneBro/.idea/discord.xml
 /src/aspire/GetItDoneBro.AppHost/.aspire/settings.json
+/CLAUDE.md
+
+/.idea
+/.claude/settings.local.json

@@ -13,6 +13,7 @@ public static class DependencyInjection
         builder.AddServiceDefaults();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
+        builder.RegisterDatabase();
         builder.Services.AddInfrastructure();
         
         builder.Services

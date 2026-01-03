@@ -35,7 +35,7 @@ public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
             throw new ValidationException(errors);
         }
 
-        var response = await next();
+        var response = await next(cancellationToken);
 
         return response;
     }

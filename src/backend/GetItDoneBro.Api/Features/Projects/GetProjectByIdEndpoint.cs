@@ -9,7 +9,7 @@ public class GetProjectByIdEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapGet("/api/projects/{id}", Handle)
+        app.MapGet("/api/v1/projects/{id}", Handle)
             .RequireAuthorization()
             .WithTags("Projects")
             .WithName("GetProjectById");

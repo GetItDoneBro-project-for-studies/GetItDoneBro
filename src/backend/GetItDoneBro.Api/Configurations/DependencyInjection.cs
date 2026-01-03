@@ -4,6 +4,7 @@ using GetItDoneBro.Infrastructure;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Scalar.AspNetCore;
 
 namespace GetItDoneBro.Api.Configurations;
 
@@ -47,6 +48,7 @@ public static class DependencyInjection
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference();
         }
 
         app.MapEndpoints();

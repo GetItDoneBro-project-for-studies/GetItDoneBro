@@ -7,7 +7,7 @@ public class DeleteProjectEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapDelete("/api/projects/{id}", Handle)
+        app.MapDelete("/api/v1/projects/{id}", Handle)
             .RequireAuthorization()
             .WithTags("Projects")
             .WithName("DeleteProject");

@@ -10,7 +10,7 @@ public class CreateProjectEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/api/projects", Handle)
+        app.MapPost("/api/v1/projects", Handle)
             .RequireAuthorization()
             .WithTags("Projects")
             .WithName("CreateProject");
@@ -29,6 +29,6 @@ public class CreateProjectEndpoint : IApiEndpoint
         }
 
         CreateProjectResponse response = await handler.HandleAsync(request, cancellationToken);
-        return Results.Created($"/api/projects/{response.Id}", response);
+        return Results.Created($"/api/v1/projects/{response.Id}", response);
     }
 }

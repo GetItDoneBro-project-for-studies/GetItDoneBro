@@ -8,7 +8,7 @@ public class GetAllProjectsEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapGet("/api/projects", Handle)
+        app.MapGet("/api/v1/projects", Handle)
             .RequireAuthorization()
             .WithTags("Projects")
             .WithName("GetAllProjects");

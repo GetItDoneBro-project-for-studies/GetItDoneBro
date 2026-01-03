@@ -110,8 +110,8 @@
         "http://frontend-getitdonebro.dev.localhost:8118/*"
       ],
       "webOrigins": [
-        "https://frontend-getitdonebro.dev.localhost:8118/*",
-        "http://frontend-getitdonebro.dev.localhost:8118/*"
+        "https://frontend-getitdonebro.dev.localhost:8118",
+        "http://frontend-getitdonebro.dev.localhost:8118"
       ],
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,

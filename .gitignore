@@ -394,6 +394,11 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 # JetBrains Rider
 *.sln.iml
 
@@ -405,3 +410,4 @@ FodyWeavers.xsd
 /CLAUDE.md
 
 /.idea
+/.claude/settings.local.json

@@ -19,7 +19,8 @@ var postgres = builder
 var database = postgres.AddDatabase("DataBase");
 
 var api = builder
-    .AddProject<GetItDoneBro_Api>("portal-api")
+    .AddProject<GetItDoneBro_Api>("getitrdonebroapi")
+    .WithHttpsEndpoint(port: 5001)
     .WithHttpHealthCheck("/health")
     .WithReference(database)
     .WithReference(keycloak)
@@ -41,11 +42,20 @@ var api = builder
     .WaitFor(database)
     .WaitFor(keycloak);
 
+// VITE_KEYCLOAK_URL=http://localhost:8080
+
+#pragma warning disable ASPIRECERTIFICATES001
 var frontend = builder
-    .AddViteApp("frontend", "../../GetItDoneBro.FrontEnd")
-    .WithEndpoint("http", e => e.Port = 9081)
+    .AddViteApp("frontend", "../../frontend/GetItDoneBro.FrontEnd")
+    .WithHttpsEndpoint(port: 8118, env: "PORT")
     .WithReference(api)
-    .WithUrl("", "GetItDoneBro UI");
+    .WithReference(keycloak)
+    .WithEnvironment("BROWSER", "none")
+    .WithEnvironment("KEYCLOAK_REALM", "portal")
+    .WithEnvironment("KEYCLOAK_CLIENT_ID", "portal-fe")
+    .WithHttpsDeveloperCertificate();
+#pragma warning restore ASPIRECERTIFICATES001
+
 
 api.PublishWithContainerFiles(frontend, "wwwroot");
 

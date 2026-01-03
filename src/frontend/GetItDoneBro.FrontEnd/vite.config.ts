@@ -8,6 +8,12 @@ export default defineConfig(({ mode }) => {
         process.env.services__keycloak__http__0 ||
         env.VITE_KEYCLOAK_URL;
 
+    if (!keycloakUrl) {
+        throw new Error(
+            'Keycloak URL is not configured. Please set one of the following environment variables: ' +
+            '"services__keycloak__https__0", "services__keycloak__http__0", or "VITE_KEYCLOAK_URL".'
+        );
+    }
     return {
         plugins: [react(),tailwindcss()],
         define: {

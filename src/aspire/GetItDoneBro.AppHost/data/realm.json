@@ -1,6 +1,6 @@
 ﻿{
   "id": "c5aa6668-6685-4bda-b0b1-f5f62d228d3e",
-  "realm": "portal",
+  "realm": "getitdonebro",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -99,17 +99,19 @@
   "webAuthnPolicyPasswordlessExtraOrigins": [],
   "clients": [
     {
-      "clientId": "portal-fe",
+      "clientId": "getitdonebro-fe",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "rootUrl": "http://localhost:8118/",
-      "adminUrl": "http://localhost:8118/",
-      "baseUrl": "http://localhost:8118/",
+      "rootUrl": "https://frontend-getitdonebro.dev.localhost:8118/",
+      "adminUrl": "https://frontend-getitdonebro.dev.localhost:8118/",
+      "baseUrl": "https://frontend-getitdonebro.dev.localhost:8118/",
       "redirectUris": [
-        "http://localhost:8118/*"
+        "https://frontend-getitdonebro.dev.localhost:8118/*",
+        "http://frontend-getitdonebro.dev.localhost:8118/*"
       ],
       "webOrigins": [
-        "http://localhost:8118"
+        "https://frontend-getitdonebro.dev.localhost:8118/*",
+        "http://frontend-getitdonebro.dev.localhost:8118/*"
       ],
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
@@ -151,18 +153,18 @@
       ]
     },
     {
-      "clientId": "portal-be",
+      "clientId": "getitdonebro-be",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "dev-secret-123",
-      "rootUrl": "https://localhost:5001/",
-      "adminUrl": "https://localhost:5001/",
-      "baseUrl": "https://localhost:5001/",
+      "rootUrl": "https://api-getitdonebro.dev.localhost:5001/",
+      "adminUrl": "https://api-getitdonebro.dev.localhost:5001/",
+      "baseUrl": "https://api-getitdonebro.dev.localhost:5001/",
       "redirectUris": [
-        "https://localhost:5001/*"
+        "https://api-getitdonebro.dev.localhost:5001/*"
       ],
       "webOrigins": [
-        "https://localhost:5001"
+        "https://api-getitdonebro.dev.localhost:5001"
       ],
       "serviceAccountsEnabled": true,
       "standardFlowEnabled": true,
@@ -206,9 +208,9 @@
   ],
   "users": [
     {
-      "username": "service-account-portal-be",
+      "username": "service-account-getitdonebro-be",
       "enabled": true,
-      "serviceAccountClientId": "portal-be",
+      "serviceAccountClientId": "getitdonebro-be",
       "clientRoles": {
         "realm-management": [
           "view-users",

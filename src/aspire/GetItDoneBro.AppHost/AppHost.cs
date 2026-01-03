@@ -8,6 +8,7 @@ var realmDataPath = Path.Combine(path1: Directory.GetCurrentDirectory(), path2: 
 var keycloak = builder
     .AddKeycloak(name: "keycloak", port: 8080)
     .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent)
     .WithRealmImport(realmDataPath);
 
 var postgres = builder
@@ -19,7 +20,7 @@ var postgres = builder
 var database = postgres.AddDatabase("DataBase");
 
 var api = builder
-    .AddProject<GetItDoneBro_Api>("getitrdonebroapi")
+    .AddProject<GetItDoneBro_Api>("api")
     .WithHttpsEndpoint(port: 5001)
     .WithHttpHealthCheck("/health")
     .WithReference(database)
@@ -42,17 +43,17 @@ var api = builder
     .WaitFor(database)
     .WaitFor(keycloak);
 
-// VITE_KEYCLOAK_URL=http://localhost:8080
 
 #pragma warning disable ASPIRECERTIFICATES001
 var frontend = builder
     .AddViteApp("frontend", "../../frontend/GetItDoneBro.FrontEnd")
     .WithHttpsEndpoint(port: 8118, env: "PORT")
+    .WaitFor(api)
     .WithReference(api)
     .WithReference(keycloak)
     .WithEnvironment("BROWSER", "none")
-    .WithEnvironment("KEYCLOAK_REALM", "portal")
-    .WithEnvironment("KEYCLOAK_CLIENT_ID", "portal-fe")
+    .WithEnvironment("VITE_KEYCLOAK_REALM", "getitdonebro")
+    .WithEnvironment("VITE_KEYCLOAK_CLIENT_ID", "getitdonebro-fe")
     .WithHttpsDeveloperCertificate();
 #pragma warning restore ASPIRECERTIFICATES001
 

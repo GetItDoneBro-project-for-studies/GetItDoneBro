@@ -4,9 +4,15 @@ import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
+    const keycloakUrl = process.env.services__keycloak__https__0 ||
+        process.env.services__keycloak__http__0 ||
+        env.VITE_KEYCLOAK_URL;
 
     return {
         plugins: [react(),tailwindcss()],
+        define: {
+            'import.meta.env.VITE_KEYCLOAK_URL': JSON.stringify(keycloakUrl),
+        },
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -16,11 +22,17 @@ export default defineConfig(({ mode }) => {
             port: env.VITE_PORT ? parseInt(env.VITE_PORT) : 5173,
             proxy: {
                 '/api': {
-                    target: process.env.services__getitrdonebroapi__https__0 ||
-                        process.env.services__getitrdonebroapi__http__0,
+                    target: process.env.services__api__https__0 ||
+                        process.env.services__api__http__0,
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
                     secure: true,
+                },
+                '/auth': {
+                    target: process.env.services__keycloak__https__0 ||
+                        process.env.services__keycloak__http__0,
+                    changeOrigin: true,
+                    secure: false,
                 }
             }
         },

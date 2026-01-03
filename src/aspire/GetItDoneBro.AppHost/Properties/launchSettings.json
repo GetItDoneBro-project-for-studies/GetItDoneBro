@@ -17,7 +17,7 @@
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "applicationUrl": "http://getitdonebro.dev.localhost:15225",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

@@ -8,6 +8,7 @@ var realmDataPath = Path.Combine(path1: Directory.GetCurrentDirectory(), path2: 
 var keycloak = builder
     .AddKeycloak(name: "keycloak", port: 8080)
     .WithDataVolume()
+    .WithOtlpExporter()
     .WithLifetime(ContainerLifetime.Persistent)
     .WithRealmImport(realmDataPath);
 

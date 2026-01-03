@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 namespace GetItDoneBro.AppHost;
 
 
@@ -110,4 +110,3 @@ public static class KeycloakExtensions
         return result;
     }
 }
-

@@ -13,6 +13,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
+        
         return services;
     }
 
@@ -24,7 +25,6 @@ public static class DependencyInjection
         {
             var dataSource = serviceProvider.GetRequiredService<Npgsql.NpgsqlDataSource>();
             options.UseNpgsql(dataSource);
-            options.UseSnakeCaseNamingConvention();
         });
 
         return builder;

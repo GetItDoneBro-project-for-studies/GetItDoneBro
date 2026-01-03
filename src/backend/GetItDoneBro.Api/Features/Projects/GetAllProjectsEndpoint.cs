@@ -1,6 +1,6 @@
 using GetItDoneBro.Api.Common;
-using GetItDoneBro.Application.Features.Projects.Queries.GetAllProjects;
-using GetItDoneBro.Application.Features.Projects.Queries.GetProjectById;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetAllProjects;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetProjectById;
 
 namespace GetItDoneBro.Api.Features.Projects;
 

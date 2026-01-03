@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace GetItDoneBro.Application.Features.Projects.Commands.CreateProject;
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
 
 public interface ICreateProjectHandler
 {

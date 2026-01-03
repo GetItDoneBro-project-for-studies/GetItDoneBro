@@ -1,11 +1,15 @@
 using FluentValidation;
 
-namespace GetItDoneBro.Application.Features.Projects.Commands.CreateProject;
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.UpdateProject;
 
-public class CreateProjectValidator : AbstractValidator<CreateProjectCommand>
+public class UpdateProjectRequestValidator : AbstractValidator<UpdateProjectRequest>
 {
-    public CreateProjectValidator()
+    public UpdateProjectRequestValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Project ID is required");
+
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("Project name is required")

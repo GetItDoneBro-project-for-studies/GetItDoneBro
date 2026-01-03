@@ -1,7 +1,7 @@
 using FluentValidation;
 using GetItDoneBro.Api.Common;
 using GetItDoneBro.Api.Extensions;
-using GetItDoneBro.Application.Features.Projects.Commands.UpdateProject;
+using GetItDoneBro.Application.UseCases.Projects.Commands.UpdateProject;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GetItDoneBro.Api.Features.Projects;

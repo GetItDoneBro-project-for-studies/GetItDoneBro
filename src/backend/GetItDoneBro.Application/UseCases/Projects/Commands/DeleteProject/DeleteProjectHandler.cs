@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace GetItDoneBro.Application.Features.Projects.Commands.DeleteProject;
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.DeleteProject;
 
 public interface IDeleteProjectHandler
 {

@@ -1,7 +1,7 @@
 using FluentValidation;
 using GetItDoneBro.Api.Common;
 using GetItDoneBro.Api.Extensions;
-using GetItDoneBro.Application.Features.Projects.Queries.GetProjectById;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetProjectById;
 
 namespace GetItDoneBro.Api.Features.Projects;
 

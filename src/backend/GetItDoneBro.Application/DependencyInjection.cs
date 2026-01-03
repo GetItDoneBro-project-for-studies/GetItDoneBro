@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using FluentValidation;
-using GetItDoneBro.Application.Features.Projects.Commands.CreateProject;
-using GetItDoneBro.Application.Features.Projects.Commands.DeleteProject;
-using GetItDoneBro.Application.Features.Projects.Commands.UpdateProject;
-using GetItDoneBro.Application.Features.Projects.Queries.GetAllProjects;
-using GetItDoneBro.Application.Features.Projects.Queries.GetProjectById;
+using GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
+using GetItDoneBro.Application.UseCases.Projects.Commands.DeleteProject;
+using GetItDoneBro.Application.UseCases.Projects.Commands.UpdateProject;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetAllProjects;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetProjectById;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GetItDoneBro.Application;

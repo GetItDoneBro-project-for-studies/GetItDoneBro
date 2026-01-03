@@ -1,7 +1,7 @@
-using GetItDoneBro.Application.Features.Projects.Queries.GetProjectById;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetProjectById;
 using Microsoft.Extensions.Logging;
 
-namespace GetItDoneBro.Application.Features.Projects.Queries.GetAllProjects;
+namespace GetItDoneBro.Application.UseCases.Projects.Queries.GetAllProjects;
 
 public interface IGetAllProjectsHandler
 {

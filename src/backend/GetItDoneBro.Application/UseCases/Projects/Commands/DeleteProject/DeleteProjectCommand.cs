@@ -1,5 +1,5 @@
 using GetItDoneBro.Application.Common.Interfaces.Messaging;
 
-namespace GetItDoneBro.Application.Features.Projects.Commands.DeleteProject;
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.DeleteProject;
 
 public record DeleteProjectCommand(Guid Id) : ICommand;

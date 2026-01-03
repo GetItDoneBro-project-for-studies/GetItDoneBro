@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace GetItDoneBro.Application.Features.Projects.Queries.GetProjectById;
+namespace GetItDoneBro.Application.UseCases.Projects.Queries.GetProjectById;
 
 public interface IGetProjectByIdHandler
 {

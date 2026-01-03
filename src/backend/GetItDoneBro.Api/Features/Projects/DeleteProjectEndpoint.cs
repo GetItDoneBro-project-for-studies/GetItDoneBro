@@ -1,5 +1,5 @@
 using GetItDoneBro.Api.Common;
-using GetItDoneBro.Application.Features.Projects.Commands.DeleteProject;
+using GetItDoneBro.Application.UseCases.Projects.Commands.DeleteProject;
 
 namespace GetItDoneBro.Api.Features.Projects;
 

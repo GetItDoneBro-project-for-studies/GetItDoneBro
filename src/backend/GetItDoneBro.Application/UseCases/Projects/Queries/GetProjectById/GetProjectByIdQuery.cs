@@ -1,6 +1,6 @@
 using GetItDoneBro.Application.Common.Interfaces.Messaging;
 
-namespace GetItDoneBro.Application.Features.Projects.Queries.GetProjectById;
+namespace GetItDoneBro.Application.UseCases.Projects.Queries.GetProjectById;
 
 public record GetProjectByIdQuery(Guid Id) : IQuery<ProjectDto?>;
 

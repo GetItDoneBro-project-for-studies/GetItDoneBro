@@ -1,6 +1,6 @@
 using GetItDoneBro.Application.Common.Interfaces.Messaging;
 
-namespace GetItDoneBro.Application.Features.Projects.Commands.CreateProject;
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
 
 public record CreateProjectCommand(string Name, string Description) : ICommand<CreateProjectResponse>;
 

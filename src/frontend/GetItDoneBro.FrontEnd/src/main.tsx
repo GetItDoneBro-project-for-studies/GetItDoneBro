@@ -1,13 +1,20 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
-import { KeycloakProvider } from './contexts/KeycloakContext'
 import './index.css'
+import './lib/axiosConfig'
+import { defaultInitOptions, keycloakService } from './services/keycloakService'
 
-createRoot(document.getElementById('root')!).render(
-	<StrictMode>
-		<KeycloakProvider>
+const initApp = async () => {
+	if (!(await keycloakService.initialize(defaultInitOptions))) {
+		console.error('Keycloak initialization failed')
+	}
+	keycloakService.setupTokenRefresh()
+	createRoot(document.getElementById('root')!).render(
+		<StrictMode>
 			<App />
-		</KeycloakProvider>
-	</StrictMode>
-)
+		</StrictMode>
+	)
+}
+
+await initApp()

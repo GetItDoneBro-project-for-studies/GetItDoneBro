@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
 						process.env.services__api__https__0 ||
 						process.env.services__api__http__0,
 					changeOrigin: true,
-					rewrite: (path) => path.replace(/^\/api/, ''),
+					rewrite: (path) => path.replace(/^\/api/, '/api'),
 					secure: true,
 				},
 				'/auth': {

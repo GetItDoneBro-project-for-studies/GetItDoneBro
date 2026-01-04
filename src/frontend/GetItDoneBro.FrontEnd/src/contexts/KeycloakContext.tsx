@@ -18,9 +18,8 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
 		const initializeKeycloak = async () => {
 			try {
 				setIsLoading(true)
-				const { defaultInitOptions } = await import(
-					'../services/keycloakService'
-				)
+				const { defaultInitOptions } =
+					await import('../services/keycloakService')
 				if (!(await keycloakService.initialize(defaultInitOptions))) {
 					throw new Error('Keycloak initialization failed')
 				}

@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 
 interface ProjectFormProps {
 	project?: Project
-	onSubmit: (data: CreateProjectInput) => void
+	onSubmit: (data: CreateProjectInput) => void | Promise<void>
 	onCancel: () => void
 	isSubmitting?: boolean
 }
@@ -63,10 +63,10 @@ export function ProjectForm({
 		return Object.keys(newErrors).length === 0
 	}
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (validate()) {
-			onSubmit(formData)
+			await onSubmit(formData)
 		}
 	}
 

@@ -1,107 +1,118 @@
+import {
+	createProjectAsync,
+	deleteProjectAsync,
+	getAllProjectsAsync,
+	updateProjectAsync,
+} from '@/api/projects'
+import { ProjectId, ProjectPayload } from '@/api/projects/types'
 import { CreateProjectInput, Project } from '@/types/project'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useState } from 'react'
+import { toast } from 'sonner'
 
 interface ProjectsContextType {
 	projects: Project[]
-	addProject: (project: CreateProjectInput) => void
-	updateProject: (id: string, updates: Partial<Project>) => void
-	deleteProject: (id: string) => void
+	addProject: (project: CreateProjectInput) => Promise<void>
+	updateProject: (id: string, updates: Partial<Project>) => Promise<void>
+	deleteProject: (id: string) => Promise<void>
 	getProjectById: (id: string) => Project | undefined
+	fetchProjects: () => Promise<void>
 	isLoading: boolean
+	isOperating: boolean
 }
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(
 	undefined
 )
 
-const STORAGE_KEY = 'getitdonebro_projects'
-
-// Initial dummy data
-const initialProjects: Project[] = [
-	{
-		id: '1',
-		name: 'Website Redesign',
-		description: 'Redesign company website with modern UI/UX',
-		status: 'active',
-		createdAt: new Date('2026-01-01'),
-	},
-	{
-		id: '2',
-		name: 'Mobile App Development',
-		description: 'Build iOS and Android mobile application',
-		status: 'active',
-		createdAt: new Date('2026-01-02'),
-	},
-	{
-		id: '3',
-		name: 'Database Migration',
-		description: 'Migrate from MySQL to PostgreSQL',
-		status: 'completed',
-		createdAt: new Date('2025-12-15'),
-	},
-]
-
 export function ProjectsProvider({ children }: { children: React.ReactNode }) {
 	const [projects, setProjects] = useState<Project[]>([])
-	const [isLoading, setIsLoading] = useState(true)
+	const [isLoading, setIsLoading] = useState(false)
+	const [isOperating, setIsOperating] = useState(false)
 
-	// Load from localStorage on mount
-	useEffect(() => {
+	// Fetch projects from API
+	const fetchProjects = useCallback(async () => {
+		setIsLoading(true)
 		try {
-			const stored = localStorage.getItem(STORAGE_KEY)
-			if (stored) {
-				const parsed = JSON.parse(stored)
-				// Convert date strings back to Date objects
-				const withDates = parsed.map((p: unknown) => {
-					const project = p as Project
-					return {
-						...project,
-						createdAt: new Date(project.createdAt),
-					}
-				})
-				setProjects(withDates)
+			const response = await getAllProjectsAsync()
+			if (response && response.data) {
+				const data = Array.isArray(response.data) ? response.data : []
+				// Convert API response to Project type with status and createdAt
+				const projectsWithFullData: Project[] = data.map((item) => ({
+					id: item.id,
+					name: item.name,
+					description: '', // API doesn't return description in list
+					status: 'active' as const,
+					createdAt: new Date(),
+				}))
+				setProjects(projectsWithFullData)
 			} else {
-				// First time - use initial data
-				setProjects(initialProjects)
+				setProjects([])
 			}
 		} catch (error) {
-			console.error('Failed to load projects from storage:', error)
-			setProjects(initialProjects)
+			console.error('Failed to fetch projects:', error)
+			toast.error('Failed to load projects')
+			setProjects([])
 		} finally {
 			setIsLoading(false)
 		}
 	}, [])
 
-	// Save to localStorage whenever projects change
-	useEffect(() => {
-		if (!isLoading) {
-			try {
-				localStorage.setItem(STORAGE_KEY, JSON.stringify(projects))
-			} catch (error) {
-				console.error('Failed to save projects to storage:', error)
+	// Initial fetch removed - each page will fetch when needed
+
+	const addProject = async (projectInput: CreateProjectInput) => {
+		setIsOperating(true)
+		try {
+			const payload: ProjectPayload = {
+				name: projectInput.name,
+				description: projectInput.description,
 			}
+			await createProjectAsync(payload)
+			toast.success('Project created successfully')
+			// Refetch all projects after creation
+			await fetchProjects()
+		} catch (error) {
+			console.error('Failed to create project:', error)
+			toast.error('Failed to create project')
+			throw error
+		} finally {
+			setIsOperating(false)
 		}
-	}, [projects, isLoading])
-
-	const addProject = (projectInput: CreateProjectInput) => {
-		const newProject: Project = {
-			...projectInput,
-			id: crypto.randomUUID(),
-			createdAt: new Date(),
-		}
-		setProjects((prev) => [newProject, ...prev])
 	}
 
-	const updateProject = (id: string, updates: Partial<Project>) => {
-		setProjects((prev) =>
-			prev.map((project) =>
-				project.id === id ? { ...project, ...updates } : project
-			)
-		)
+	const updateProject = async (id: string, updates: Partial<Project>) => {
+		setIsOperating(true)
+		try {
+			const payload: ProjectPayload = {
+				name: updates.name || '',
+				description: updates.description || '',
+			}
+			await updateProjectAsync(id as ProjectId, payload)
+			toast.success('Project updated successfully')
+			// Refetch all projects after update
+			await fetchProjects()
+		} catch (error) {
+			console.error('Failed to update project:', error)
+			toast.error('Failed to update project')
+			throw error
+		} finally {
+			setIsOperating(false)
+		}
 	}
 
-	const deleteProject = (id: string) => {
-		setProjects((prev) => prev.filter((project) => project.id !== id))
+	const deleteProject = async (id: string) => {
+		setIsOperating(true)
+		try {
+			await deleteProjectAsync(id as ProjectId)
+			toast.success('Project deleted successfully')
+			// Refetch all projects after deletion
+			await fetchProjects()
+		} catch (error) {
+			console.error('Failed to delete project:', error)
+			toast.error('Failed to delete project')
+			throw error
+		} finally {
+			setIsOperating(false)
+		}
 	}
 
 	const getProjectById = (id: string) => {
@@ -116,7 +127,9 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
 				updateProject,
 				deleteProject,
 				getProjectById,
+				fetchProjects,
 				isLoading,
+				isOperating,
 			}}
 		>
 			{children}

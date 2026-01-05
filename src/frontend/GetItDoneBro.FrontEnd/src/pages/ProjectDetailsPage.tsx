@@ -1,3 +1,6 @@
+import { getProjectByIdAsync } from '@/api/projects'
+import { ProjectId } from '@/api/projects/types'
+import LoaderSkeleton from '@/components/LoaderSkeleton'
 import { FadeIn } from '@/components/motion-primitives/FadeIn'
 import { ProjectDialog } from '@/components/projects/ProjectDialog'
 import { Badge } from '@/components/ui/badge'
@@ -12,9 +15,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useProjects } from '@/contexts/ProjectsContext'
-import { CreateProjectInput } from '@/types/project'
+import { CreateProjectInput, Project } from '@/types/project'
 import { ArrowLeft, Calendar, Clock, Pencil, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -29,10 +32,49 @@ const statusColors = {
 export function ProjectDetailsPage() {
 	const { id } = useParams<{ id: string }>()
 	const navigate = useNavigate()
-	const { getProjectById, updateProject, deleteProject } = useProjects()
+	const { updateProject, deleteProject, isOperating } = useProjects()
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+	const [project, setProject] = useState<Project | null>(null)
+	const [isLoading, setIsLoading] = useState(true)
 
-	const project = id ? getProjectById(id) : undefined
+	useEffect(() => {
+		const loadProject = async () => {
+			if (!id) {
+				setIsLoading(false)
+				return
+			}
+
+			setIsLoading(true)
+			try {
+				const response = await getProjectByIdAsync(id as ProjectId)
+				if (response && response.data) {
+					// Convert API response to Project type
+					const fullProject: Project = {
+						id: response.data.id,
+						name: response.data.name,
+						description: '', // API doesn't return description in detail
+						status: 'active',
+						createdAt: new Date(),
+					}
+					setProject(fullProject)
+				} else {
+					setProject(null)
+				}
+			} catch (error) {
+				console.error('Failed to load project:', error)
+				toast.error('Failed to load project')
+				setProject(null)
+			} finally {
+				setIsLoading(false)
+			}
+		}
+
+		loadProject()
+	}, [id])
+
+	if (isLoading) {
+		return <LoaderSkeleton />
+	}
 
 	if (!project) {
 		return (
@@ -54,17 +96,42 @@ export function ProjectDetailsPage() {
 
 	const handleDeleteAsync = async () => {
 		if (
-			window.confirm(`Are you sure you want to delete "${project.name}"?`)
+			!project ||
+			!window.confirm(
+				`Are you sure you want to delete "${project.name}"?`
+			)
 		) {
-			deleteProject(project.id)
-			toast.success('Project deleted successfully!')
-			await navigate('/projects')
+			return
+		}
+
+		try {
+			await deleteProject(project.id)
+			navigate('/projects')
+		} catch (error) {
+			// Error handled in context
 		}
 	}
 
-	const handleUpdate = (data: CreateProjectInput) => {
-		updateProject(project.id, data)
-		toast.success('Project updated successfully!')
+	const handleUpdate = async (data: CreateProjectInput) => {
+		if (!project) return
+
+		try {
+			await updateProject(project.id, data)
+			// Reload project after update
+			const response = await getProjectByIdAsync(project.id as ProjectId)
+			if (response && response.data) {
+				const updatedProject: Project = {
+					...project,
+					name: response.data.name,
+					description: data.description,
+					status: data.status,
+				}
+				setProject(updatedProject)
+			}
+			setIsEditDialogOpen(false)
+		} catch (error) {
+			// Error handled in context
+		}
 	}
 
 	const daysSinceCreation = Math.floor(
@@ -121,7 +188,11 @@ export function ProjectDetailsPage() {
 						</p>
 					</div>
 					<div className="ml-4 flex gap-2">
-						<Button variant="outline" onClick={handleEdit}>
+						<Button
+							variant="outline"
+							onClick={handleEdit}
+							disabled={isOperating}
+						>
 							<Pencil className="mr-2 h-4 w-4" />
 							Edit
 						</Button>
@@ -129,6 +200,7 @@ export function ProjectDetailsPage() {
 							variant="outline"
 							onClick={handleDeleteAsync}
 							className="text-destructive hover:bg-destructive/10"
+							disabled={isOperating}
 						>
 							<Trash2 className="mr-2 h-4 w-4" />
 							Delete
@@ -248,6 +320,7 @@ export function ProjectDetailsPage() {
 				onOpenChange={setIsEditDialogOpen}
 				project={project}
 				onSubmit={handleUpdate}
+				isSubmitting={isOperating}
 			/>
 		</div>
 	)

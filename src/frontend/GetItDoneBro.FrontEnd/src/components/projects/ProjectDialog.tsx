@@ -13,6 +13,7 @@ interface ProjectDialogProps {
 	onOpenChange: (open: boolean) => void
 	project?: Project
 	onSubmit: (data: CreateProjectInput) => void
+	isSubmitting?: boolean
 }
 
 export function ProjectDialog({
@@ -20,10 +21,10 @@ export function ProjectDialog({
 	onOpenChange,
 	project,
 	onSubmit,
+	isSubmitting = false,
 }: ProjectDialogProps) {
-	const handleSubmit = (data: CreateProjectInput) => {
-		onSubmit(data)
-		onOpenChange(false)
+	const handleSubmit = async (data: CreateProjectInput) => {
+		await onSubmit(data)
 	}
 
 	return (
@@ -43,6 +44,7 @@ export function ProjectDialog({
 					project={project}
 					onSubmit={handleSubmit}
 					onCancel={() => onOpenChange(false)}
+					isSubmitting={isSubmitting}
 				/>
 			</DialogContent>
 		</Dialog>

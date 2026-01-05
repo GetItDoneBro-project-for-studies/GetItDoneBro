@@ -1,13 +1,24 @@
+import LoaderSkeleton from '@/components/LoaderSkeleton'
 import { FadeIn } from '@/components/motion-primitives/FadeIn'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useProjects } from '@/contexts/ProjectsContext'
 import { Activity, Archive, CheckCircle2, FolderKanban } from 'lucide-react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export function Dashboard() {
-	const { projects } = useProjects()
+	const { projects, isLoading, fetchProjects } = useProjects()
 	const navigate = useNavigate()
+
+	// Fetch projects when component mounts
+	useEffect(() => {
+		fetchProjects()
+	}, [fetchProjects])
+
+	if (isLoading) {
+		return <LoaderSkeleton />
+	}
 
 	const stats = {
 		total: projects.length,

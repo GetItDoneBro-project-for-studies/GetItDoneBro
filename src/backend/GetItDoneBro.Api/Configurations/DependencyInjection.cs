@@ -19,19 +19,19 @@ public static class DependencyInjection
         builder.RegisterDatabase();
         builder.Services.AddInfrastructure();
 
-        builder.Services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddKeycloakWebApi(builder.Configuration);
+        // builder.Services
+        //     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //     .AddKeycloakWebApi(builder.Configuration);
 
-        builder.Services
-            .AddAuthorization()
-            .AddAuthorizationBuilder();
+        // builder.Services
+        //     .AddAuthorization()
+        //     .AddAuthorizationBuilder();
 
-        builder.Services
-            .AddKeycloakAuthorization()
-            .AddAuthorizationServer(builder.Configuration);
+        //builder.Services
+        //    .AddKeycloakAuthorization()
+        //    .AddAuthorizationServer(builder.Configuration);
 
-        builder.Services.AddAuthorization();
+        // builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
 
         return builder;
@@ -43,7 +43,9 @@ public static class DependencyInjection
         app.UseDefaultFiles();
         app.UseStaticFiles();
         app.ApplyMigrations();
-        app.UseHttpsRedirection().UseAuthentication().UseAuthorization();
+        app.UseHttpsRedirection();
+        // .UseAuthentication()
+        // .UseAuthorization();
 
         if (app.Environment.IsDevelopment())
         {

@@ -11,7 +11,7 @@ public class CreateProjectEndpoint : IApiEndpoint
     public void MapEndpoint(WebApplication app)
     {
         app.MapPost("/api/v1/projects", Handle)
-            .RequireAuthorization()
+            // .RequireAuthorization()
             .WithTags("Projects")
             .WithName("CreateProject");
     }

@@ -1,27 +1,10 @@
-import { User } from './types'
+import { axiosRequest } from '@/hooks/useAxios'
+import { AxiosResultObject } from '@/types/models'
 
-export async function getUsersAsync() {
-	await new Promise((resolve) => setTimeout(resolve, 500))
-
-	const users: User[] = [
-		{
-			id: '1',
-			username: 'John Doe',
-			email: 'john.doe@example.com',
-		},
-		{
-			id: '2',
-			username: 'Jane Smith',
-			email: 'jane.smith@example.com',
-		},
-	]
-
-	return {
-		data: users,
-	}
-	// return axiosRequest<AxiosResultObject<User[]>, void>({
-	// 	url: 'api/users',
-	// 	method: 'GET',
-	// 	defaultErrorMessage: 'Failed to fetch users',
-	// })
+export async function getProjects() {
+	return axiosRequest<AxiosResultObject<[]>, void>({
+		url: '/api/v1/projects',
+		method: 'GET',
+		defaultErrorMessage: 'Failed to fetch users',
+	})
 }

@@ -1,5 +1,5 @@
-export interface User {
+export interface Project {
 	id: string
-	username: string
-	email: string
+	name: string
+	description: string
 }

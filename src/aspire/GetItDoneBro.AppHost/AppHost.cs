@@ -45,19 +45,18 @@ var api = builder
     .WaitFor(keycloak);
 
 
-#pragma warning disable ASPIRECERTIFICATES001
 var frontend = builder
     .AddViteApp("frontend", "../../frontend/GetItDoneBro.FrontEnd")
-    .WithHttpsEndpoint(port: 8118, env: "PORT")
+    .WithEndpoint("http", endpoint =>
+    {
+        endpoint.Port = 8118;
+    })
     .WaitFor(api)
     .WithReference(api)
     .WithReference(keycloak)
     .WithEnvironment("BROWSER", "none")
     .WithEnvironment("VITE_KEYCLOAK_REALM", "getitdonebro")
-    .WithEnvironment("VITE_KEYCLOAK_CLIENT_ID", "getitdonebro-fe")
-    .WithHttpsDeveloperCertificate();
-#pragma warning restore ASPIRECERTIFICATES001
-
+    .WithEnvironment("VITE_KEYCLOAK_CLIENT_ID", "getitdonebro-fe");
 
 api.PublishWithContainerFiles(frontend, "wwwroot");
 

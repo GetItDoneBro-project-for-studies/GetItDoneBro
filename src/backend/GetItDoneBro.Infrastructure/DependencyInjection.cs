@@ -1,5 +1,7 @@
-﻿using GetItDoneBro.Domain.Interfaces;
+﻿using GetItDoneBro.Application.Common.Interfaces.Services;
+using GetItDoneBro.Domain.Interfaces;
 using GetItDoneBro.Infrastructure.Persistence;
+using GetItDoneBro.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +15,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
-        
+        services.AddScoped<IProjectsService, ProjectsService>();
         return services;
     }
 

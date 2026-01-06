@@ -44,9 +44,7 @@ public class GetProjectByIdEndpoint : IApiEndpoint
         {
             ProjectDto response = await handler.HandleAsync(request, cancellationToken);
 
-            logger.LogInformation("Project retrieved successfully. ProjectId: {ProjectId}, ProjectName: {ProjectName}",
-                response.Id,
-                response.Name);
+            logger.LogInformation("Project retrieved successfully");
 
             return Results.Ok(response);
         }

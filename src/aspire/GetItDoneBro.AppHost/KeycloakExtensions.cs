@@ -1,6 +1,6 @@
 using System.Text.Json;
-namespace GetItDoneBro.AppHost;
 
+namespace GetItDoneBro.AppHost;
 
 public static class KeycloakExtensions
 {
@@ -8,7 +8,7 @@ public static class KeycloakExtensions
         this IResourceBuilder<TResource> builder,
         IResourceBuilder<KeycloakResource> keycloakBuilder,
         string? realmImportPath = null
-        )
+    )
         where TResource : IResourceWithEnvironment
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -33,22 +33,20 @@ public static class KeycloakExtensions
 
         var keycloakEndpoint = keycloakBuilder.Resource.GetEndpoint("http");
 
-        builder.WithEnvironment(
-            name: "KeycloakOptions__Host",
-            value: keycloakEndpoint
-        );
+        builder.WithEnvironment("Keycloak__Realm", realm);
+        builder.WithEnvironment("Keycloak__AuthServerUrl", keycloakEndpoint);
+        builder.WithEnvironment("Keycloak__Resource", clientId);
+        builder.WithEnvironment("Keycloak__Audience", "account");
+        builder.WithEnvironment("Keycloak__Credentials__Secret", clientSecret);
+        builder.WithEnvironment("Keycloak__SslRequired", "none");
+        builder.WithEnvironment("Keycloak__VerifyTokenAudience", "false");
 
-        builder.WithEnvironment(name: "KeycloakOptions__Realm", value: realm);
-        builder.WithEnvironment(name: "KeycloakOptions__ClientId", value: clientId);
-        builder.WithEnvironment(name: "KeycloakOptions__ClientSecret", value: clientSecret);
-        builder.WithEnvironment(name: "KeycloakOptions__Audience", value: "account");
-        builder.WithEnvironment(name: "KeycloakOptions__RequireHttpsMetadata", value: "false");
-        builder.WithEnvironment(name: "KeycloakOptions__SkipEmailSending", value: "false");
 
         return builder;
     }
 
-    private static (string Realm, string ClientId, string ClientSecret) TryExtractRealmDataFromImportFile(string? realmImportPath)
+    private static (string Realm, string ClientId, string ClientSecret) TryExtractRealmDataFromImportFile(
+        string? realmImportPath)
     {
         var result = (Realm: string.Empty, ClientId: string.Empty, ClientSecret: string.Empty);
 
@@ -63,7 +61,8 @@ public static class KeycloakExtensions
 
             if (Directory.Exists(realmImportPath))
             {
-                var jsonFiles = Directory.GetFiles(path: realmImportPath, searchPattern: "*realm*.json", searchOption: SearchOption.TopDirectoryOnly);
+                string[] jsonFiles = Directory.GetFiles(realmImportPath, "*realm*.json",
+                    SearchOption.TopDirectoryOnly);
                 if (jsonFiles.Length > 0)
                 {
                     filePath = jsonFiles[0];
@@ -80,7 +79,8 @@ public static class KeycloakExtensions
                     result.Realm = realmProperty.GetString() ?? string.Empty;
                 }
 
-                if (document.RootElement.TryGetProperty(propertyName: "clients", value: out var clientsProperty) && clientsProperty.ValueKind == JsonValueKind.Array)
+                if (document.RootElement.TryGetProperty("clients", out JsonElement clientsProperty) &&
+                    clientsProperty.ValueKind == JsonValueKind.Array)
                 {
                     foreach (var client in clientsProperty.EnumerateArray())
                     {
@@ -94,7 +94,8 @@ public static class KeycloakExtensions
                             result.ClientSecret = secretProp.GetString() ?? string.Empty;
                         }
 
-                        if (!string.IsNullOrWhiteSpace(result.ClientId) && !string.IsNullOrWhiteSpace(result.ClientSecret))
+                        if (!string.IsNullOrWhiteSpace(result.ClientId) &&
+                            !string.IsNullOrWhiteSpace(result.ClientSecret))
                         {
                             break;
                         }

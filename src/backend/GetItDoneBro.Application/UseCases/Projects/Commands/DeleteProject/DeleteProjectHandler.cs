@@ -9,7 +9,7 @@ public interface IDeleteProjectHandler
     Task HandleAsync(Guid projectId, CancellationToken cancellationToken);
 }
 
-internal sealed class DeleteProjectHandler(
+public sealed class DeleteProjectHandler(
     IProjectsService projects,
     ILogger<DeleteProjectHandler> logger)
     : IDeleteProjectHandler

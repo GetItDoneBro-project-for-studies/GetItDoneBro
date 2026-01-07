@@ -8,7 +8,7 @@ public interface IGetAllProjectsHandler
     Task<List<ProjectDto>> HandleAsync(CancellationToken cancellationToken);
 }
 
-internal sealed class GetAllProjectsHandler(
+public sealed class GetAllProjectsHandler(
     ILogger<GetAllProjectsHandler> logger)
     : IGetAllProjectsHandler
 {

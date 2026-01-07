@@ -5,6 +5,10 @@ using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Scalar.AspNetCore;
+using GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
+using GetItDoneBro.Application.UseCases.Projects.Commands.DeleteProject;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetAllProjects;
+using GetItDoneBro.Application.Common.Interfaces.Services;
 
 namespace GetItDoneBro.Api.Configurations;
 
@@ -18,6 +22,11 @@ public static class DependencyInjection
         builder.Services.AddApplication();
         builder.RegisterDatabase();
         builder.Services.AddInfrastructure();
+
+        // Rejestracja handlerów i serwisu do szybkiego testu (in-memory)
+        builder.Services.AddScoped<IGetAllProjectsHandler, GetAllProjectsHandler>();
+        builder.Services.AddScoped<ICreateProjectHandler, CreateProjectHandler>();
+        builder.Services.AddScoped<IDeleteProjectHandler, DeleteProjectHandler>();
 
         // builder.Services
         //     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

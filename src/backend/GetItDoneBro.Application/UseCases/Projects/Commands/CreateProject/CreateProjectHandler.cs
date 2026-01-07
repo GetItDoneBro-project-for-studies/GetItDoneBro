@@ -10,7 +10,7 @@ public interface ICreateProjectHandler
     Task<CreateProjectResponse> HandleAsync(CreateProjectRequest request, CancellationToken cancellationToken);
 }
 
-internal sealed class CreateProjectHandler(
+public sealed class CreateProjectHandler(
     IProjectsService projects,
     ILogger<CreateProjectHandler> logger)
     : ICreateProjectHandler

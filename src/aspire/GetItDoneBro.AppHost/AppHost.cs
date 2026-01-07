@@ -27,36 +27,37 @@ var api = builder
     .WithReference(database)
     .WithReference(keycloak)
     .WithUrls(context =>
+    {
+        foreach (ResourceUrlAnnotation url in context.Urls)
         {
-            foreach (var url in context.Urls)
-            {
-                url.DisplayLocation = UrlDisplayLocation.DetailsOnly;
-            }
+            url.DisplayLocation = UrlDisplayLocation.DetailsOnly;
+        }
 
-            context.Urls.Add(new()
-            {
-                Url = "/scalar",
-                DisplayText = "API Reference",
-                Endpoint = context.GetEndpoint("https")
-            });
+        context.Urls.Add(new ResourceUrlAnnotation
+        {
+            Url = "/scalar",
+            DisplayText = "API Reference",
+            Endpoint = context.GetEndpoint("https")
+        });
     })
     .WithKeycloakConfiguration(keycloakBuilder: keycloak, realmImportPath: realmDataPath)
     .WaitFor(database)
     .WaitFor(keycloak);
 
 
+#pragma warning disable ASPIRECERTIFICATES001
 var frontend = builder
     .AddViteApp("frontend", "../../frontend/GetItDoneBro.FrontEnd")
-    .WithEndpoint("http", endpoint =>
-    {
-        endpoint.Port = 8118;
-    })
+    .WithHttpsEndpoint(8118, env: "PORT")
     .WaitFor(api)
     .WithReference(api)
     .WithReference(keycloak)
     .WithEnvironment("BROWSER", "none")
     .WithEnvironment("VITE_KEYCLOAK_REALM", "getitdonebro")
-    .WithEnvironment("VITE_KEYCLOAK_CLIENT_ID", "getitdonebro-fe");
+    .WithEnvironment("VITE_KEYCLOAK_CLIENT_ID", "getitdonebro-fe")
+    .WithHttpsDeveloperCertificate();
+#pragma warning restore ASPIRECERTIFICATES001
+
 
 api.PublishWithContainerFiles(frontend, "wwwroot");
 

@@ -15,8 +15,6 @@ public static class Program
 
         builder.ConfigureServices();
 
-        Console.WriteLine(builder.Configuration);
-
         WebApplication app = builder.Build();
 
         app.ConfigureApplication();

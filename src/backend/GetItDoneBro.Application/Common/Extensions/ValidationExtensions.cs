@@ -1,7 +1,8 @@
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 
-namespace GetItDoneBro.Api.Extensions;
+namespace GetItDoneBro.Application.Common.Extensions;
 
 public static class ValidationExtensions
 {

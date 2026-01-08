@@ -1,5 +1,5 @@
 using System.Reflection;
-using GetItDoneBro.Api.Common;
+using GetItDoneBro.Application.Common.Interfaces;
 
 namespace GetItDoneBro.Api.Extensions;
 
@@ -7,7 +7,7 @@ public static class EndpointExtensions
 {
     public static WebApplication MapEndpoints(this WebApplication app)
     {
-        var assembly = Assembly.GetExecutingAssembly();
+        Assembly assembly = typeof(IApiEndpoint).Assembly;
 
         var endpointTypes = assembly.GetTypes()
             .Where(t => t is { IsClass: true, IsAbstract: false } &&

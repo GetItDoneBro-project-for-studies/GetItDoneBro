@@ -1,7 +1,8 @@
-﻿using GetItDoneBro.Application.Common.Interfaces.Services;
-using GetItDoneBro.Domain.Interfaces;
+﻿using GetItDoneBro.Application.Common.Interfaces;
+using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Infrastructure.Persistence;
-using GetItDoneBro.Infrastructure.Services;
+using GetItDoneBro.Infrastructure.Persistence.Interceptors;
+using GetItDoneBro.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,23 +16,23 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
-        services.AddScoped<IProjectsService, ProjectsService>();
+        services.AddScoped<IProjectsRepository, ProjectsRepository>();
+        services.AddSingleton<AuditableInterceptor>();
         return services;
     }
 
     public static IHostApplicationBuilder RegisterDatabase(this IHostApplicationBuilder builder)
     {
-        builder.AddNpgsqlDataSource("DataBase");
-        
-        builder.Services.AddDbContext<GetItDoneBroDbContext>((serviceProvider, options) =>
+        builder.Services.AddDbContext<GetItDoneBroDbContext>((provider, options) =>
         {
-            var dataSource = serviceProvider.GetRequiredService<Npgsql.NpgsqlDataSource>();
-            options.UseNpgsql(dataSource);
+            AuditableInterceptor interceptor = provider.GetRequiredService<AuditableInterceptor>();
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase"));
+            options.AddInterceptors(interceptor);
         });
 
         return builder;
     }
-    
+
     public static WebApplication ApplyMigrations(this WebApplication webApplication)
     {
         using var scope = webApplication.Services.CreateScope();

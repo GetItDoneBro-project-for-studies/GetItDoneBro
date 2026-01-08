@@ -31,7 +31,7 @@ public static class KeycloakExtensions
             throw new InvalidOperationException("Client secret could not be determined from import file.");
         }
 
-        var keycloakEndpoint = keycloakBuilder.Resource.GetEndpoint("http");
+        EndpointReference keycloakEndpoint = keycloakBuilder.Resource.GetEndpoint("https");
 
         builder.WithEnvironment("Keycloak__Realm", realm);
         builder.WithEnvironment("Keycloak__AuthServerUrl", keycloakEndpoint);
@@ -40,7 +40,6 @@ public static class KeycloakExtensions
         builder.WithEnvironment("Keycloak__Credentials__Secret", clientSecret);
         builder.WithEnvironment("Keycloak__SslRequired", "none");
         builder.WithEnvironment("Keycloak__VerifyTokenAudience", "false");
-
 
         return builder;
     }

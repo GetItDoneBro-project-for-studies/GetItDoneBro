@@ -1,6 +1,4 @@
 using GetItDoneBro.Api.Configurations;
-using Keycloak.AuthServices.Authentication;
-using Keycloak.AuthServices.Common;
 
 namespace GetItDoneBro.Api;
 
@@ -15,11 +13,9 @@ public static class Program
             }
         );
 
-        var keycloakOptions = builder.Configuration.GetKeycloakOptions<KeycloakAuthenticationOptions>()!;
-
-        Console.WriteLine(keycloakOptions.Audience);
-
         builder.ConfigureServices();
+
+        Console.WriteLine(builder.Configuration);
 
         WebApplication app = builder.Build();
 

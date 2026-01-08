@@ -10,13 +10,11 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
             .NotEmpty()
             .WithMessage("Project ID is required");
 
-        RuleFor(x => x.Name)
-            .NotEmpty()
-            .WithMessage("Project name is required")
+        RuleFor(x => x.Body.Name)
             .MaximumLength(100)
             .WithMessage("Project name must not exceed 100 characters");
 
-        RuleFor(x => x.Description)
+        RuleFor(x => x.Body.Description)
             .MaximumLength(500)
             .WithMessage("Project description must not exceed 500 characters");
     }

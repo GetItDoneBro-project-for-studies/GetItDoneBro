@@ -1,36 +1,42 @@
-// csharp
+using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Application.Exceptions;
+using GetItDoneBro.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
 
 public interface ICreateProjectHandler
 {
-    Task<CreateProjectResponse> HandleAsync(CreateProjectRequest request, CancellationToken cancellationToken);
+    Task<Guid> HandleAsync(CreateProjectCommand command, CancellationToken cancellationToken);
 }
 
 public sealed class CreateProjectHandler(
-    IProjectsService projects,
+    IProjectsRepository projects,
+    IRepository repository,
     ILogger<CreateProjectHandler> logger)
     : ICreateProjectHandler
 {
-    public async Task<CreateProjectResponse> HandleAsync(
-        CreateProjectRequest request,
+    public async Task<Guid> HandleAsync(
+        CreateProjectCommand command,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Creating project with name {ProjectName}", request.Name);
+        logger.LogInformation("Creating project with name {ProjectName}", command.Name);
 
-        if (await projects.NameExistsAsync(request.Name, null, cancellationToken))
+        if (await projects.IsNameExistsAsync(command.Name, cancellationToken))
         {
-            logger.LogWarning("Duplicate project name detected: {ProjectName}", request.Name);
-            throw new DuplicateProjectException(request.Name);
+            logger.LogWarning("Duplicate project name detected: {ProjectName}", command.Name);
+            throw new DuplicateProjectException(command.Name);
         }
 
-        Guid projectId = await projects.CreateAsync(request.Name, request.Description, cancellationToken);
+        var project = Project.Create(command.Name, command.Description);
 
-        logger.LogInformation("Created project with ID {ProjectId}", projectId);
+        await repository.Projects.AddAsync(project, cancellationToken);
 
-        return new CreateProjectResponse(projectId, request.Name);
+        await repository.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Created project with ID {ProjectId}", project.Id);
+
+        return project.Id;
     }
 }

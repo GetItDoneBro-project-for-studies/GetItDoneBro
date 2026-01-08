@@ -29,4 +29,8 @@
         <ProjectReference Include="..\GetItDoneBro.Infrastructure\GetItDoneBro.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Common\"/>
+    </ItemGroup>
+
 </Project>

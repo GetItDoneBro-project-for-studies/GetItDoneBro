@@ -1,14 +1,14 @@
 ﻿using GetItDoneBro.Api.Extensions;
 using GetItDoneBro.Api.Middlewares;
 using GetItDoneBro.Application;
+using GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
+using GetItDoneBro.Application.UseCases.Projects.Commands.DeleteProject;
+using GetItDoneBro.Application.UseCases.Projects.Queries.GetAllProjects;
 using GetItDoneBro.Infrastructure;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Scalar.AspNetCore;
-using GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
-using GetItDoneBro.Application.UseCases.Projects.Commands.DeleteProject;
-using GetItDoneBro.Application.UseCases.Projects.Queries.GetAllProjects;
 
 namespace GetItDoneBro.Api.Configurations;
 
@@ -30,10 +30,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<IGetAllProjectsHandler, GetAllProjectsHandler>();
         builder.Services.AddScoped<ICreateProjectHandler, CreateProjectHandler>();
         builder.Services.AddScoped<IDeleteProjectHandler, DeleteProjectHandler>();
-
-        builder.Services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddKeycloakWebApi(builder.Configuration);
 
         builder.Services
             .AddAuthorization()

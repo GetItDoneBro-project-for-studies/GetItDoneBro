@@ -11,7 +11,7 @@ public class UpdateProjectEndpoint : IApiEndpoint
     public void MapEndpoint(WebApplication app)
     {
         app.MapPut("/api/v1/projects/{id}", Handle)
-            // .RequireAuthorization()
+            .RequireAuthorization()
             .WithTags("Projects")
             .WithName("UpdateProject");
     }

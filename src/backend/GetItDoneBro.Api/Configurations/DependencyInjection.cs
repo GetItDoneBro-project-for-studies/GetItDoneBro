@@ -1,4 +1,5 @@
 ﻿using GetItDoneBro.Api.Extensions;
+using GetItDoneBro.Api.Middlewares;
 using GetItDoneBro.Application;
 using GetItDoneBro.Infrastructure;
 using Keycloak.AuthServices.Authentication;
@@ -19,19 +20,19 @@ public static class DependencyInjection
         builder.RegisterDatabase();
         builder.Services.AddInfrastructure();
 
-        // builder.Services
-        //     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //     .AddKeycloakWebApi(builder.Configuration);
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddKeycloakWebApi(builder.Configuration);
 
-        // builder.Services
-        //     .AddAuthorization()
-        //     .AddAuthorizationBuilder();
+        builder.Services
+            .AddAuthorization()
+            .AddAuthorizationBuilder();
 
-        //builder.Services
-        //    .AddKeycloakAuthorization()
-        //    .AddAuthorizationServer(builder.Configuration);
+        builder.Services
+            .AddKeycloakAuthorization()
+            .AddAuthorizationServer(builder.Configuration);
 
-        // builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
 
         return builder;
@@ -40,12 +41,14 @@ public static class DependencyInjection
     public static WebApplication ConfigureApplication(this WebApplication app)
     {
         app.MapDefaultEndpoints();
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseDefaultFiles();
         app.UseStaticFiles();
         app.ApplyMigrations();
-        app.UseHttpsRedirection();
-        // .UseAuthentication()
-        // .UseAuthorization();
+        app.UseHttpsRedirection()
+            .UseAuthentication()
+            .UseAuthorization();
+
 
         if (app.Environment.IsDevelopment())
         {

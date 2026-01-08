@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using GetItDoneBro.Application.Common.Interfaces.Messaging;
 using GetItDoneBro.Domain.Exceptions;
 using MediatR;
@@ -18,12 +19,13 @@ public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
     {
         var context = new ValidationContext<TRequest>(request);
 
-        var validationFailures = await Task.WhenAll(validators.Select(validator => validator.ValidateAsync(context: context, cancellation: cancellationToken)));
+        ValidationResult[] validationFailures = await Task.WhenAll(validators.Select(validator =>
+            validator.ValidateAsync(context, cancellationToken)));
 
         var errors = validationFailures
             .Where(validationResult => !validationResult.IsValid)
             .SelectMany(validationResult => validationResult.Errors)
-            .Select(validationFailure => new ValidationError(
+            .Select(validationFailure => new ErrorDetail(
                     PropertyName: validationFailure.PropertyName,
                     ErrorMessage: validationFailure.ErrorMessage
                 )

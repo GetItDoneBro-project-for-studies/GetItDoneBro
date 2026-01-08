@@ -1,46 +1,24 @@
 ﻿namespace GetItDoneBro.Domain.Exceptions;
 
-
-public class ValidationException : Exception
+public class ValidationException : BaseException
 {
+    private const int DefaultStatusCode = 400;
+    private const string DefaultType = "ValidationFailure";
+    private const string DefaultTitle = "Błędne dane!";
+    private const string DefaultDetail = "Wystąpiły błędy walidacji.";
+
     public ValidationException()
+        : base(DefaultStatusCode, DefaultType, DefaultTitle, DefaultDetail)
     {
-        Errors = [];
     }
 
-    public ValidationException(IEnumerable<ValidationError> errors)
-        : base(FormatErrorMessage(errors))
+    public ValidationException(IEnumerable<ErrorDetail> errors)
+        : base(DefaultStatusCode, DefaultType, DefaultTitle, DefaultDetail, errors)
     {
-        Errors = errors;
     }
 
     public ValidationException(string propertyName, string errorMessage)
-        : base($"[{propertyName}] {errorMessage}")
+        : base(DefaultStatusCode, DefaultType, DefaultTitle, DefaultDetail, propertyName, errorMessage)
     {
-        Errors = [new ValidationError(PropertyName: propertyName, ErrorMessage: errorMessage)];
-    }
-
-    public IEnumerable<ValidationError> Errors { get; }
-
-    private static string FormatErrorMessage(IEnumerable<ValidationError> errors)
-    {
-        var errorsList = errors.ToList();
-        switch (errorsList.Count)
-        {
-            case 0:
-                return "One or more validation failures have occurred.";
-            case 1:
-                {
-                    var error = errorsList[0];
-                    return $"[{error.PropertyName}] {error.ErrorMessage}";
-                }
-            default:
-                {
-                    var formattedErrors = errorsList.Select(e => $"[{e.PropertyName}] {e.ErrorMessage}");
-                    return $"Validation failures:{Environment.NewLine}{string.Join(separator: Environment.NewLine, values: formattedErrors)}";
-                }
-        }
     }
 }
-
-public record ValidationError(string PropertyName, string ErrorMessage);

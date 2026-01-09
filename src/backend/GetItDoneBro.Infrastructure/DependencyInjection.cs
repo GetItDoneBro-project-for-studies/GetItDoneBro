@@ -2,6 +2,7 @@ using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Infrastructure.Persistence;
 using GetItDoneBro.Infrastructure.Persistence.Interceptors;
+using GetItDoneBro.Infrastructure.Proxies.KeyCloak;
 using GetItDoneBro.Infrastructure.Repositories;
 using GetItDoneBro.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,15 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddSingleton<AuditableInterceptor>();
         services.AddHttpContextAccessor();
+
+        // Keycloak services
+        services.AddMemoryCache();
+        services.AddHttpClient("KeycloakProxyClient");
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ICacheService, DistributedCacheService>();
+        services.AddScoped<RequestProxyService>();
+        services.AddScoped<IUserProxy, UserProxy>();
+
         return services;
     }
 

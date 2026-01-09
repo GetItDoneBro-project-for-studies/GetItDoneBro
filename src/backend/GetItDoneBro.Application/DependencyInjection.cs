@@ -9,6 +9,10 @@ using GetItDoneBro.Application.UseCases.ProjectUsers.Commands.AssignUserToProjec
 using GetItDoneBro.Application.UseCases.ProjectUsers.Commands.RemoveUserFromProject;
 using GetItDoneBro.Application.UseCases.ProjectUsers.Commands.UpdateUserRole;
 using GetItDoneBro.Application.UseCases.ProjectUsers.Queries.GetProjectUsers;
+using GetItDoneBro.Application.UseCases.Users.Commands.AddUser;
+using GetItDoneBro.Application.UseCases.Users.Commands.DisableUser;
+using GetItDoneBro.Application.UseCases.Users.Commands.ResetPasswordUser;
+using GetItDoneBro.Application.UseCases.Users.Queries.GetUsers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GetItDoneBro.Application;
@@ -30,6 +34,10 @@ public static class DependencyInjection
         services.AddScoped<IRemoveUserFromProjectHandler, RemoveUserFromProjectHandler>();
         services.AddScoped<IUpdateUserRoleHandler, UpdateUserRoleHandler>();
         services.AddScoped<IGetProjectUsersHandler, GetProjectUsersHandler>();
+        services.AddScoped<IAddUserHandler, AddUserHandler>();
+        services.AddScoped<IDisableUserHandler, DisableUserHandler>();
+        services.AddScoped<IResetUserPasswordHandler, ResetUserPasswordHandler>();
+        services.AddScoped<IGetUsersHandler, GetUsersHandler>();
 
         return services;
     }

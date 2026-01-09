@@ -18,7 +18,7 @@ public class ResetUserPasswordEndpoint : IApiEndpoint
 
     private static async Task<IResult> Handle(
         [FromRoute] Guid id,
-        IResetUserPasswordHandler handler,
+        [FromServices] IResetUserPasswordHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new ResetUserPasswordCommand(id);

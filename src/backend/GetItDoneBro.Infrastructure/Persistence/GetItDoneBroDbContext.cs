@@ -1,4 +1,4 @@
-﻿using GetItDoneBro.Application.Common.Interfaces;
+using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Domain.Abstract;
 using GetItDoneBro.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +10,7 @@ namespace GetItDoneBro.Infrastructure.Persistence;
 public class GetItDoneBroDbContext(DbContextOptions<GetItDoneBroDbContext> options) : DbContext(options), IRepository
 {
     public DbSet<Project> Projects => Set<Project>();
+    public DbSet<ProjectUser> ProjectUsers => Set<ProjectUser>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

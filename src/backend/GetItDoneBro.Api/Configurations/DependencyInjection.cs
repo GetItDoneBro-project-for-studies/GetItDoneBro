@@ -1,4 +1,4 @@
-﻿using GetItDoneBro.Api.Extensions;
+using GetItDoneBro.Api.Extensions;
 using GetItDoneBro.Api.Middlewares;
 using GetItDoneBro.Application;
 using GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
@@ -55,7 +55,6 @@ public static class DependencyInjection
         app.UseHttpsRedirection()
             .UseAuthentication()
             .UseAuthorization();
-
 
         if (app.Environment.IsDevelopment())
         {

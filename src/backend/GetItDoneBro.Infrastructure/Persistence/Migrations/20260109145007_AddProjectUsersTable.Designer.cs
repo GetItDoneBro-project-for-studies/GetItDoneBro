@@ -3,6 +3,7 @@ using System;
 using GetItDoneBro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GetItDoneBro.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GetItDoneBroDbContext))]
-    partial class GetItDoneBroDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260109145007_AddProjectUsersTable")]
+    partial class AddProjectUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

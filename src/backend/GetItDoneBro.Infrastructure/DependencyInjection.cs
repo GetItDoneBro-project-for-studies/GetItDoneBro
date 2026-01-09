@@ -1,8 +1,9 @@
-﻿using GetItDoneBro.Application.Common.Interfaces;
+using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Infrastructure.Persistence;
 using GetItDoneBro.Infrastructure.Persistence.Interceptors;
 using GetItDoneBro.Infrastructure.Repositories;
+using GetItDoneBro.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +18,10 @@ public static class DependencyInjection
     {
         services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
         services.AddScoped<IProjectsRepository, ProjectsRepository>();
+        services.AddScoped<IProjectUsersRepository, ProjectUsersRepository>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddSingleton<AuditableInterceptor>();
+        services.AddHttpContextAccessor();
         return services;
     }
 

@@ -242,7 +242,6 @@ export function ProjectDetailsPage() {
 			setIsUserOperating(false)
 		}
 	}
-	}
 
 	const daysSinceCreation = Math.floor(
 		(new Date().getTime() - new Date(project.createdAt).getTime()) /

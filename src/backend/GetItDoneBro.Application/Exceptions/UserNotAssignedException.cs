@@ -8,7 +8,7 @@ public class UserNotAssignedException : Exception
     public Dictionary<string, object> Metadata { get; }
 
     public UserNotAssignedException(Guid projectId, string keycloakId)
-        : base($"Uzytkownik '{keycloakId}' nie jest przypisany do projektu '{projectId}'.")
+        : base($"User '{keycloakId}' is not assigned to project with ID '{projectId}'.")
     {
         ProjectId = projectId;
         KeycloakId = keycloakId;

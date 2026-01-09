@@ -7,7 +7,7 @@ public class InsufficientPermissionsException : Exception
     public Dictionary<string, object> Metadata { get; }
 
     public InsufficientPermissionsException(string operation)
-        : base($"Nie masz uprawnien do wykonania operacji: {operation}.")
+        : base($"You do not have permissions to perform this operation: {operation}.")
     {
         Operation = operation;
         Metadata = new Dictionary<string, object>

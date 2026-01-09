@@ -8,7 +8,7 @@ public class UserAlreadyAssignedException : Exception
     public Dictionary<string, object> Metadata { get; }
 
     public UserAlreadyAssignedException(Guid projectId, string keycloakId)
-        : base($"Uzytkownik '{keycloakId}' jest juz przypisany do projektu '{projectId}'.")
+        : base($"User with ID '{keycloakId}' is already assigned to project with ID '{projectId}'.")
     {
         ProjectId = projectId;
         KeycloakId = keycloakId;

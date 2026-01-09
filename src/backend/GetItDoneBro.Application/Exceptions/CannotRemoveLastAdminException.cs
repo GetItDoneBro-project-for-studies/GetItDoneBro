@@ -7,7 +7,7 @@ public class CannotRemoveLastAdminException : Exception
     public Dictionary<string, object> Metadata { get; }
 
     public CannotRemoveLastAdminException(Guid projectId)
-        : base($"Projekt '{projectId}' musi miec co najmniej jednego administratora.")
+        : base($"Project with ID '{projectId}' must have at least one administrator.")
     {
         ProjectId = projectId;
         Metadata = new Dictionary<string, object>

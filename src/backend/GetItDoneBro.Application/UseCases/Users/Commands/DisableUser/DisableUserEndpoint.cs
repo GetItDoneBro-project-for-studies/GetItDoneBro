@@ -18,7 +18,7 @@ public class DisableUserEndpoint : IApiEndpoint
 
     private static async Task<IResult> Handle(
         [FromRoute] Guid id,
-        IDisableUserHandler handler,
+        [FromServices] IDisableUserHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new DisableUserCommand(id);

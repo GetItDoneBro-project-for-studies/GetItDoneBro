@@ -25,8 +25,8 @@ public class AddUserEndpoint : IApiEndpoint
 
     private static async Task<IResult> Handle(
         [FromBody] AddUserCommand body,
-        IValidator<AddUserCommand> validator,
-        IAddUserHandler handler,
+        [FromServices] IValidator<AddUserCommand> validator,
+        [FromServices] IAddUserHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new AddUserCommand(body.Email, body.FirstName, body.LastName, body.Enabled);

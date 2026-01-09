@@ -1,8 +1,11 @@
-﻿using GetItDoneBro.Application.Common.Interfaces;
+using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.Common.Interfaces.Services;
+using GetItDoneBro.Domain.Interfaces;
 using GetItDoneBro.Infrastructure.Persistence;
 using GetItDoneBro.Infrastructure.Persistence.Interceptors;
+using GetItDoneBro.Infrastructure.Proxies.KeyCloak;
 using GetItDoneBro.Infrastructure.Repositories;
+using GetItDoneBro.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +20,19 @@ public static class DependencyInjection
     {
         services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
         services.AddScoped<IProjectsRepository, ProjectsRepository>();
+        services.AddScoped<IProjectUsersRepository, ProjectUsersRepository>();
+        services.AddScoped<IUserResolver, UserResolverService>();
         services.AddSingleton<AuditableInterceptor>();
+        services.AddHttpContextAccessor();
+
+        // Keycloak services
+        services.AddMemoryCache();
+        services.AddHttpClient("KeycloakProxyClient");
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ICacheService, DistributedCacheService>();
+        services.AddScoped<RequestProxyService>();
+        services.AddScoped<IUserProxy, UserProxy>();
+
         return services;
     }
 

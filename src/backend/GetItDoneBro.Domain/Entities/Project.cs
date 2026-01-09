@@ -18,6 +18,8 @@ public class Project : Entity, IAuditableEntity
     public DateTime CreatedAtUtc { get; set; }
     public DateTime? UpdatedAtUtc { get; set; }
 
+    public ICollection<ProjectUser> ProjectUsers { get; private set; } = new List<ProjectUser>();
+
     public static Project Create(string name, string description)
     {
         return new Project(name, description);

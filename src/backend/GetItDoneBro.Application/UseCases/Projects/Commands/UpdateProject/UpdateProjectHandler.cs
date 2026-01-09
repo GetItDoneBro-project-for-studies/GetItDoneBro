@@ -44,5 +44,7 @@ internal sealed class UpdateProjectHandler(
         {
             project.SetDescription(request.Body.Description);
         }
+
+        await repository.SaveChangesAsync(cancellationToken);
     }
 }

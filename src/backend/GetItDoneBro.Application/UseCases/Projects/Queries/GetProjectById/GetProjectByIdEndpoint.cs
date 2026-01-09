@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using GetItDoneBro.Application.Common.Interfaces;
-using GetItDoneBro.Application.UseCases.Projects.Dtos;
+using GetItDoneBro.Application.UseCases.Projects.Shared.Dtos;
 using GetItDoneBro.Application.UseCases.Projects.Shared.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

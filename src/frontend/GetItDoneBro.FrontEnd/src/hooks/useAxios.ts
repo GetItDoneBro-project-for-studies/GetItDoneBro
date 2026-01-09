@@ -2,7 +2,7 @@ import { exceptionHelper } from '@/services/helpers/ExceptionHelper'
 import { AxiosResultObject } from '@/types/models'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
 type ResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text'
 

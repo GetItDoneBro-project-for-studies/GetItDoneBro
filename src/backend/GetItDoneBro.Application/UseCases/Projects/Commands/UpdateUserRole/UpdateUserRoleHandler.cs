@@ -1,0 +1,55 @@
+using GetItDoneBro.Application.Common.Interfaces;
+using GetItDoneBro.Application.Common.Interfaces.Services;
+using GetItDoneBro.Application.Exceptions;
+using GetItDoneBro.Domain.Enums;
+using GetItDoneBro.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
+
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.UpdateUserRole;
+
+public interface IUpdateUserRoleHandler
+{
+    Task HandleAsync(UpdateUserRoleCommand command, CancellationToken cancellationToken);
+}
+
+public sealed class UpdateUserRoleHandler(
+    IRepository repository,
+    IProjectUsersRepository projectUsersRepository,
+    IUserResolver userResolver,
+    ILogger<UpdateUserRoleHandler> logger)
+    : IUpdateUserRoleHandler
+{
+    public async Task HandleAsync(UpdateUserRoleCommand command, CancellationToken cancellationToken)
+    {
+        logger.LogInformation(
+            "Updating role for user {KeycloakId} in project {ProjectId} to {Role}",
+            command.KeycloakId, command.ProjectId, command.Role);
+
+        var currentUserRole = await projectUsersRepository.GetUserRoleAsync(
+            command.ProjectId, userResolver.UserId, cancellationToken);
+
+        if (currentUserRole != ProjectRole.Admin)
+        {
+            throw new InsufficientPermissionsException("zmiana roli uzytkownika w projekcie");
+        }
+
+        var projectUser = await projectUsersRepository.GetAsync(command.ProjectId, Guid.Parse(command.KeycloakId), cancellationToken) ??
+                          throw new UserNotAssignedException(command.ProjectId, command.KeycloakId);
+
+        if (projectUser.Role == ProjectRole.Admin && command.Role != ProjectRole.Admin)
+        {
+            int adminCount = await projectUsersRepository.GetAdminCountAsync(command.ProjectId, cancellationToken);
+            if (adminCount <= 1)
+            {
+                throw new CannotRemoveLastAdminException(command.ProjectId);
+            }
+        }
+
+        projectUser.SetRole(command.Role);
+        await repository.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation(
+            "Role for user {KeycloakId} in project {ProjectId} successfully updated to {Role}",
+            command.KeycloakId, command.ProjectId, command.Role);
+    }
+}

@@ -1,5 +1,5 @@
 using GetItDoneBro.Application.Common.Interfaces;
-using GetItDoneBro.Application.UseCases.Projects.Dtos;
+using GetItDoneBro.Application.UseCases.Projects.Shared.Dtos;
 using GetItDoneBro.Domain.Entities;
 using GetItDoneBro.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;

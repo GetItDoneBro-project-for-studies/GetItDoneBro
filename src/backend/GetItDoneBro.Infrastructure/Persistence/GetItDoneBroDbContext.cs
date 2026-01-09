@@ -10,7 +10,9 @@ namespace GetItDoneBro.Infrastructure.Persistence;
 public class GetItDoneBroDbContext(DbContextOptions<GetItDoneBroDbContext> options) : DbContext(options), IRepository
 {
     public DbSet<Project> Projects => Set<Project>();
-
+    public DbSet<ProjectUser> ProjectUsers => Set<ProjectUser>();
+    public DbSet<TaskColumn> TaskColumns => Set<TaskColumn>();
+    public DbSet<ProjectTask> ProjectTasks => Set<ProjectTask>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("unaccent");

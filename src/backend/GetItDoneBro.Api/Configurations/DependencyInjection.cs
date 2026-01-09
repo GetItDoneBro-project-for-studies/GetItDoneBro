@@ -1,4 +1,4 @@
-﻿using GetItDoneBro.Api.Extensions;
+using GetItDoneBro.Api.Extensions;
 using GetItDoneBro.Api.Middlewares;
 using GetItDoneBro.Application;
 using GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
@@ -18,6 +18,7 @@ public static class DependencyInjection
     {
         builder.Host.CustomConfigureAppConfiguration();
         builder.AddServiceDefaults();
+        builder.ConfigureOptions();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddApplication();
         builder.RegisterDatabase();
@@ -55,7 +56,6 @@ public static class DependencyInjection
         app.UseHttpsRedirection()
             .UseAuthentication()
             .UseAuthorization();
-
 
         if (app.Environment.IsDevelopment())
         {

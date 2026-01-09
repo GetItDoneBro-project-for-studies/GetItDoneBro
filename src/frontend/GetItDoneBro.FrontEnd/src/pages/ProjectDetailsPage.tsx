@@ -1,8 +1,24 @@
-import { getProjectByIdAsync } from '@/api/projects'
-import { ProjectId } from '@/api/projects/types'
+import {
+	assignUserToProjectAsync,
+	getProjectByIdAsync,
+	getProjectUsersAsync,
+	removeUserFromProjectAsync,
+	updateUserRoleAsync,
+} from '@/api/projects'
+import {
+	AssignUserToProjectPayload,
+	ProjectId,
+	ProjectRole,
+	ProjectUserDto,
+	UserId,
+} from '@/api/projects/types'
+import { getAllUsersAsync } from '@/api/users'
+import { User } from '@/api/users/types'
 import LoaderSkeleton from '@/components/LoaderSkeleton'
 import { FadeIn } from '@/components/motion-primitives/FadeIn'
+import { AssignUserDialog } from '@/components/projects/AssignUserDialog'
 import { ProjectDialog } from '@/components/projects/ProjectDialog'
+import { ProjectUsersCard } from '@/components/projects/ProjectUsersCard'
 import { Badge } from '@/components/ui/badge'
 import {
 	Breadcrumb,
@@ -17,7 +33,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useProjects } from '@/contexts/ProjectsContext'
 import { CreateProjectInput, Project } from '@/types/project'
 import { ArrowLeft, Calendar, Clock, Pencil, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -34,8 +50,46 @@ export function ProjectDetailsPage() {
 	const navigate = useNavigate()
 	const { updateProject, deleteProject, isOperating } = useProjects()
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+	const [isAssignUserDialogOpen, setIsAssignUserDialogOpen] = useState(false)
 	const [project, setProject] = useState<Project | null>(null)
+	const [projectUsers, setProjectUsers] = useState<ProjectUserDto[]>([])
+	const [availableUsers, setAvailableUsers] = useState<User[]>([])
 	const [isLoading, setIsLoading] = useState(true)
+	const [isLoadingUsers, setIsLoadingUsers] = useState(false)
+	const [isUserOperating, setIsUserOperating] = useState(false)
+
+	const fetchProjectUsers = useCallback(async () => {
+		if (!id) return
+		setIsLoadingUsers(true)
+		try {
+			const response = await getProjectUsersAsync(id as ProjectId)
+			if (response && response.data) {
+				setProjectUsers(response.data)
+			} else {
+				setProjectUsers([])
+			}
+		} catch (error) {
+			console.error('Failed to load project users:', error)
+		} finally {
+			setIsLoadingUsers(false)
+		}
+	}, [id])
+
+	const fetchAvailableUsers = useCallback(async () => {
+		try {
+			const response = await getAllUsersAsync()
+			if (response && response.data) {
+				// Filter out users already assigned to project
+				const assignedUserIds = projectUsers.map((u) => u.keycloakId)
+				const available = response.data.filter(
+					(u) => u.enabled && !assignedUserIds.includes(u.id)
+				)
+				setAvailableUsers(available)
+			}
+		} catch (error) {
+			console.error('Failed to load available users:', error)
+		}
+	}, [projectUsers])
 
 	useEffect(() => {
 		const loadProject = async () => {
@@ -71,6 +125,18 @@ export function ProjectDetailsPage() {
 
 		loadProject()
 	}, [id])
+
+	useEffect(() => {
+		if (project) {
+			fetchProjectUsers()
+		}
+	}, [project, fetchProjectUsers])
+
+	useEffect(() => {
+		if (isAssignUserDialogOpen) {
+			fetchAvailableUsers()
+		}
+	}, [isAssignUserDialogOpen, fetchAvailableUsers])
 
 	if (isLoading) {
 		return <LoaderSkeleton />
@@ -132,6 +198,50 @@ export function ProjectDetailsPage() {
 		} catch (error) {
 			// Error handled in context
 		}
+	}
+
+	const handleAssignUser = async (data: AssignUserToProjectPayload) => {
+		if (!project) return
+		setIsUserOperating(true)
+		try {
+			await assignUserToProjectAsync(project.id as ProjectId, data)
+			toast.success('User assigned successfully')
+			await fetchProjectUsers()
+			setIsAssignUserDialogOpen(false)
+		} catch (error) {
+			console.error('Failed to assign user:', error)
+		} finally {
+			setIsUserOperating(false)
+		}
+	}
+
+	const handleUpdateUserRole = async (userId: UserId, role: ProjectRole) => {
+		if (!project) return
+		setIsUserOperating(true)
+		try {
+			await updateUserRoleAsync(project.id as ProjectId, userId, { role })
+			toast.success('User role updated')
+			await fetchProjectUsers()
+		} catch (error) {
+			console.error('Failed to update user role:', error)
+		} finally {
+			setIsUserOperating(false)
+		}
+	}
+
+	const handleRemoveUser = async (userId: UserId) => {
+		if (!project) return
+		setIsUserOperating(true)
+		try {
+			await removeUserFromProjectAsync(project.id as ProjectId, userId)
+			toast.success('User removed from project')
+			await fetchProjectUsers()
+		} catch (error) {
+			console.error('Failed to remove user:', error)
+		} finally {
+			setIsUserOperating(false)
+		}
+	}
 	}
 
 	const daysSinceCreation = Math.floor(
@@ -304,6 +414,17 @@ export function ProjectDetailsPage() {
 				</Card>
 			</FadeIn>
 
+			<FadeIn delay={0.45}>
+				<ProjectUsersCard
+					users={projectUsers}
+					isLoading={isLoadingUsers}
+					onAssignUser={() => setIsAssignUserDialogOpen(true)}
+					onUpdateRole={handleUpdateUserRole}
+					onRemoveUser={handleRemoveUser}
+					disabled={isUserOperating}
+				/>
+			</FadeIn>
+
 			<FadeIn delay={0.5}>
 				<Button
 					variant="outline"
@@ -321,6 +442,15 @@ export function ProjectDetailsPage() {
 				project={project}
 				onSubmit={handleUpdate}
 				isSubmitting={isOperating}
+			/>
+
+			<AssignUserDialog
+				open={isAssignUserDialogOpen}
+				onOpenChange={setIsAssignUserDialogOpen}
+				onSubmit={handleAssignUser}
+				isSubmitting={isUserOperating}
+				availableUsers={availableUsers}
+				isLoadingUsers={isLoadingUsers}
 			/>
 		</div>
 	)

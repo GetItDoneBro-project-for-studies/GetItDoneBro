@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/hooks/useAuth'
 import { keycloakService } from '@/services/keycloakService'
-import { FolderKanban, Home, LogOut } from 'lucide-react'
+import { FolderKanban, Home, LogOut, Users } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 const navigation = [
@@ -26,6 +26,11 @@ const navigation = [
 		name: 'Projects',
 		href: '/projects',
 		icon: FolderKanban,
+	},
+	{
+		name: 'Users',
+		href: '/users',
+		icon: Users,
 	},
 ]
 

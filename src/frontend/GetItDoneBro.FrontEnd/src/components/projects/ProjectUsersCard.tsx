@@ -112,15 +112,22 @@ export function ProjectUsersCard({
 							>
 								<div className="flex items-center gap-3">
 									<div className="bg-primary text-primary-foreground font-heading flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold">
-										{user.keycloakId
-											.slice(0, 2)
-											.toUpperCase()}
+										{(user.firstName && user.lastName
+											? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
+											: user.username.slice(0, 2)
+										).toUpperCase()}
 									</div>
 									<div>
 										<p className="font-heading text-sm font-medium">
-											{user.keycloakId}
+											{user.firstName && user.lastName
+												? `${user.firstName} ${user.lastName}`
+												: user.username}
 										</p>
 										<p className="text-muted-foreground text-xs">
+											{user.firstName &&
+												user.lastName && (
+													<>@{user.username} • </>
+												)}
 											Assigned{' '}
 											{new Date(
 												user.assignedAtUtc

@@ -80,7 +80,7 @@ export function ProjectDetailsPage() {
 			const response = await getAllUsersAsync()
 			if (response && response.data) {
 				// Filter out users already assigned to project
-				const assignedUserIds = projectUsers.map((u) => u.keycloakId)
+				const assignedUserIds = projectUsers.map((u) => u.id)
 				const available = response.data.filter(
 					(u) => u.enabled && !assignedUserIds.includes(u.id)
 				)

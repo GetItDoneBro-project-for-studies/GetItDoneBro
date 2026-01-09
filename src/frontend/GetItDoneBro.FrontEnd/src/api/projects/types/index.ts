@@ -23,7 +23,9 @@ export interface ProjectPayload {
 
 export interface ProjectUserDto {
 	id: UserId
-	keycloakId: string
+	username: string
+	firstName: string | null
+	lastName: string | null
 	role: ProjectRole
 	assignedAtUtc: string
 }

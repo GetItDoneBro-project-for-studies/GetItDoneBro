@@ -9,7 +9,6 @@ using GetItDoneBro.Application.UseCases.ProjectUsers.Commands.AssignUserToProjec
 using GetItDoneBro.Application.UseCases.ProjectUsers.Commands.RemoveUserFromProject;
 using GetItDoneBro.Application.UseCases.ProjectUsers.Commands.UpdateUserRole;
 using GetItDoneBro.Application.UseCases.ProjectUsers.Queries.GetProjectUsers;
-using GetItDoneBro.Application.UseCases.ProjectUsers.Queries.GetUserProjects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GetItDoneBro.Application;
@@ -31,7 +30,6 @@ public static class DependencyInjection
         services.AddScoped<IRemoveUserFromProjectHandler, RemoveUserFromProjectHandler>();
         services.AddScoped<IUpdateUserRoleHandler, UpdateUserRoleHandler>();
         services.AddScoped<IGetProjectUsersHandler, GetProjectUsersHandler>();
-        services.AddScoped<IGetUserProjectsHandler, GetUserProjectsHandler>();
 
         return services;
     }

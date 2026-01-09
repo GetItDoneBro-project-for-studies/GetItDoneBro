@@ -1,27 +1,27 @@
 using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.UseCases.Projects.Shared.Dtos;
 using GetItDoneBro.Application.UseCases.Projects.Shared.Routes;
+using GetItDoneBro.Application.UseCases.ProjectUsers.Queries.GetProjectUsers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GetItDoneBro.Application.UseCases.Projects.Queries.GetAllProjects;
+namespace GetItDoneBro.Application.UseCases.Projects.Queries.GetProjectUsers;
 
-public class GetAllProjectsEndpoint : IApiEndpoint
+public class GetProjectUsersEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapGet(RouteConsts.BaseRoute, Handle)
+        app.MapGet(RouteConsts.UsersRoute, Handle)
             .RequireAuthorization();
     }
 
     private static async Task<IResult> Handle(
-        [FromQuery(Name = "user_id")] Guid? userId,
-        IGetAllProjectsHandler handler,
+        [FromRoute] Guid projectId,
+        IGetProjectUsersHandler handler,
         CancellationToken cancellationToken)
     {
-        IEnumerable<ProjectDto> response = await handler.HandleAsync(userId, cancellationToken);
-
-        return Results.Ok(response);
+        IEnumerable<ProjectUserDto> result = await handler.HandleAsync(projectId, cancellationToken);
+        return Results.Ok(result);
     }
 }

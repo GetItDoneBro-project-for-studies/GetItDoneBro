@@ -33,6 +33,8 @@ public sealed class DeleteProjectHandler(
             throw new ProjectNotFoundException(command.Id);
         }
 
+        await repository.SaveChangesAsync(cancellationToken);
+
         logger.LogDebug("Usunięto projekt {ProjectId}", command.Id);
     }
 }

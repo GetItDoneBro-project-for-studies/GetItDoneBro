@@ -1,4 +1,4 @@
-using GetItDoneBro.Application.Common.Interfaces;
+﻿using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Domain.Abstract;
 using GetItDoneBro.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,8 @@ public class GetItDoneBroDbContext(DbContextOptions<GetItDoneBroDbContext> optio
 {
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectUser> ProjectUsers => Set<ProjectUser>();
-
+    public DbSet<TaskColumn> TaskColumns => Set<TaskColumn>();
+    public DbSet<ProjectTask> ProjectTasks => Set<ProjectTask>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("unaccent");

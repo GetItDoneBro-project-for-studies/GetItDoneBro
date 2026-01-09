@@ -12,8 +12,26 @@ import {
 	ProjectUserDto,
 	UserId,
 } from '@/api/projects/types'
+import {
+	createTaskColumnAsync,
+	deleteTaskColumnAsync,
+	getTaskColumnsByProjectAsync,
+	updateTaskColumnAsync,
+} from '@/api/taskColumns'
+import { TaskColumn, TaskColumnId } from '@/api/taskColumns/types'
+import {
+	createTaskAsync,
+	deleteTaskAsync,
+	getTasksByProjectAsync,
+	moveTaskToColumnAsync,
+	updateTaskAsync,
+} from '@/api/tasks'
+import { Task, TaskId } from '@/api/tasks/types'
 import { getAllUsersAsync } from '@/api/users'
 import { User } from '@/api/users/types'
+import { KanbanBoard } from '@/components/kanban/KanbanBoard'
+import { TaskColumnDialog } from '@/components/kanban/TaskColumnDialog'
+import { TaskDialog } from '@/components/kanban/TaskDialog'
 import LoaderSkeleton from '@/components/LoaderSkeleton'
 import { FadeIn } from '@/components/motion-primitives/FadeIn'
 import { AssignUserDialog } from '@/components/projects/AssignUserDialog'
@@ -30,6 +48,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useProjects } from '@/contexts/ProjectsContext'
 import { CreateProjectInput, Project } from '@/types/project'
 import { ArrowLeft, Calendar, Clock, Pencil, Trash2 } from 'lucide-react'
@@ -57,6 +76,19 @@ export function ProjectDetailsPage() {
 	const [isLoading, setIsLoading] = useState(true)
 	const [isLoadingUsers, setIsLoadingUsers] = useState(false)
 	const [isUserOperating, setIsUserOperating] = useState(false)
+
+	// Kanban state
+	const [taskColumns, setTaskColumns] = useState<TaskColumn[]>([])
+	const [tasks, setTasks] = useState<Task[]>([])
+	const [isLoadingKanban, setIsLoadingKanban] = useState(false)
+	const [isColumnDialogOpen, setIsColumnDialogOpen] = useState(false)
+	const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false)
+	const [editingColumn, setEditingColumn] = useState<TaskColumn | null>(null)
+	const [editingTask, setEditingTask] = useState<Task | null>(null)
+	const [selectedColumnId, setSelectedColumnId] = useState<string | null>(
+		null
+	)
+	const [isKanbanOperating, setIsKanbanOperating] = useState(false)
 
 	const fetchProjectUsers = useCallback(async () => {
 		if (!id) return
@@ -137,6 +169,40 @@ export function ProjectDetailsPage() {
 			fetchAvailableUsers()
 		}
 	}, [isAssignUserDialogOpen, fetchAvailableUsers])
+
+	// Fetch Kanban data
+	const fetchKanbanData = useCallback(async () => {
+		if (!id) return
+		setIsLoadingKanban(true)
+		try {
+			const [columnsResponse, tasksResponse] = await Promise.all([
+				getTaskColumnsByProjectAsync(id as ProjectId),
+				getTasksByProjectAsync(id as ProjectId),
+			])
+
+			if (columnsResponse && columnsResponse.data) {
+				setTaskColumns(columnsResponse.data)
+			} else {
+				setTaskColumns([])
+			}
+
+			if (tasksResponse && tasksResponse.data) {
+				setTasks(tasksResponse.data)
+			} else {
+				setTasks([])
+			}
+		} catch (error) {
+			console.error('Failed to load kanban data:', error)
+		} finally {
+			setIsLoadingKanban(false)
+		}
+	}, [id])
+
+	useEffect(() => {
+		if (project) {
+			fetchKanbanData()
+		}
+	}, [project, fetchKanbanData])
 
 	if (isLoading) {
 		return <LoaderSkeleton />
@@ -243,13 +309,142 @@ export function ProjectDetailsPage() {
 		}
 	}
 
+	// Kanban handlers
+	const handleCreateColumn = () => {
+		setEditingColumn(null)
+		setIsColumnDialogOpen(true)
+	}
+
+	const handleUpdateColumn = (columnId: string) => {
+		const column = taskColumns.find((c) => c.id === columnId)
+		if (column) {
+			setEditingColumn(column)
+			setIsColumnDialogOpen(true)
+		}
+	}
+
+	const handleDeleteColumn = async (columnId: string) => {
+		if (!window.confirm('Are you sure you want to delete this column?'))
+			return
+		setIsKanbanOperating(true)
+		try {
+			await deleteTaskColumnAsync(columnId as TaskColumnId)
+			toast.success('Column deleted')
+			await fetchKanbanData()
+		} catch (error) {
+			console.error('Failed to delete column:', error)
+		} finally {
+			setIsKanbanOperating(false)
+		}
+	}
+
+	const handleColumnSubmit = async (data: {
+		name: string
+		orderIndex: number
+	}) => {
+		if (!project) return
+		setIsKanbanOperating(true)
+		try {
+			if (editingColumn) {
+				await updateTaskColumnAsync(editingColumn.id, data)
+				toast.success('Column updated')
+			} else {
+				await createTaskColumnAsync({
+					...data,
+					projectId: project.id,
+				})
+				toast.success('Column created')
+			}
+			await fetchKanbanData()
+			setIsColumnDialogOpen(false)
+		} catch (error) {
+			console.error('Failed to save column:', error)
+		} finally {
+			setIsKanbanOperating(false)
+		}
+	}
+
+	const handleCreateTask = (columnId: string) => {
+		setSelectedColumnId(columnId)
+		setEditingTask(null)
+		setIsTaskDialogOpen(true)
+	}
+
+	const handleUpdateTask = (taskId: string) => {
+		const task = tasks.find((t) => t.id === taskId)
+		if (task) {
+			setSelectedColumnId(task.taskColumnId)
+			setEditingTask(task)
+			setIsTaskDialogOpen(true)
+		}
+	}
+
+	const handleDeleteTask = async (taskId: string) => {
+		if (!window.confirm('Are you sure you want to delete this task?'))
+			return
+		setIsKanbanOperating(true)
+		try {
+			await deleteTaskAsync(taskId as TaskId)
+			toast.success('Task deleted')
+			await fetchKanbanData()
+		} catch (error) {
+			console.error('Failed to delete task:', error)
+		} finally {
+			setIsKanbanOperating(false)
+		}
+	}
+
+	const handleTaskSubmit = async (data: {
+		title: string
+		description: string
+		assignedToKeycloakId?: string | null
+		imageUrl?: string | null
+	}) => {
+		if (!project || !selectedColumnId) return
+		setIsKanbanOperating(true)
+		try {
+			if (editingTask) {
+				await updateTaskAsync(editingTask.id, data)
+				toast.success('Task updated')
+			} else {
+				await createTaskAsync({
+					...data,
+					projectId: project.id,
+					taskColumnId: selectedColumnId,
+				})
+				toast.success('Task created')
+			}
+			await fetchKanbanData()
+			setIsTaskDialogOpen(false)
+		} catch (error) {
+			console.error('Failed to save task:', error)
+		} finally {
+			setIsKanbanOperating(false)
+		}
+	}
+
+	const handleMoveTask = async (taskId: string, targetColumnId: string) => {
+		setIsKanbanOperating(true)
+		try {
+			await moveTaskToColumnAsync(taskId as TaskId, {
+				taskColumnId: targetColumnId,
+			})
+			toast.success('Task moved')
+			await fetchKanbanData()
+		} catch (error) {
+			console.error('Failed to move task:', error)
+		} finally {
+			setIsKanbanOperating(false)
+		}
+	}
+
 	const daysSinceCreation = Math.floor(
 		(new Date().getTime() - new Date(project.createdAt).getTime()) /
 			(1000 * 60 * 60 * 24)
 	)
 
 	return (
-		<div className="max-w-4xl space-y-6">
+		<div className="max-w-7xl space-y-6">
 			<FadeIn>
 				<Breadcrumb>
 					<BreadcrumbList>
@@ -318,110 +513,127 @@ export function ProjectDetailsPage() {
 				</div>
 			</FadeIn>
 
-			<div className="grid gap-6 md:grid-cols-2">
-				<FadeIn delay={0.2}>
-					<Card className="border-2">
-						<CardHeader>
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<Calendar className="text-primary h-5 w-5" />
-								Created Date
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<p className="font-heading text-2xl font-semibold">
-								{new Date(project.createdAt).toLocaleDateString(
-									'en-US',
-									{
-										month: 'long',
-										day: 'numeric',
-										year: 'numeric',
-									}
-								)}
-							</p>
-							<p className="text-muted-foreground mt-1 text-sm">
-								{daysSinceCreation === 0
-									? 'Created today'
-									: `${daysSinceCreation} ${daysSinceCreation === 1 ? 'day' : 'days'} ago`}
-							</p>
-						</CardContent>
-					</Card>
-				</FadeIn>
+			<FadeIn delay={0.2}>
+				<Tabs defaultValue="overview" className="w-full">
+					<TabsList className="grid w-full max-w-md grid-cols-2">
+						<TabsTrigger value="overview">Overview</TabsTrigger>
+						<TabsTrigger value="kanban">Kanban Board</TabsTrigger>
+					</TabsList>
 
-				<FadeIn delay={0.3}>
-					<Card className="border-2">
-						<CardHeader>
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<Clock className="text-primary h-5 w-5" />
-								Status
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<p className="font-heading text-2xl font-semibold capitalize">
-								{project.status}
-							</p>
-							<p className="text-muted-foreground mt-1 text-sm">
-								{project.status === 'active'
-									? 'Currently in progress'
-									: project.status === 'completed'
-										? 'Successfully completed'
-										: 'Archived and inactive'}
-							</p>
-						</CardContent>
-					</Card>
-				</FadeIn>
-			</div>
+					<TabsContent value="overview" className="space-y-6 pt-6">
+						<div className="grid gap-6 md:grid-cols-2">
+							<Card className="border-2">
+								<CardHeader>
+									<CardTitle className="flex items-center gap-2 text-lg">
+										<Calendar className="text-primary h-5 w-5" />
+										Created Date
+									</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<p className="font-heading text-2xl font-semibold">
+										{new Date(
+											project.createdAt
+										).toLocaleDateString('en-US', {
+											month: 'long',
+											day: 'numeric',
+											year: 'numeric',
+										})}
+									</p>
+									<p className="text-muted-foreground mt-1 text-sm">
+										{daysSinceCreation === 0
+											? 'Created today'
+											: `${daysSinceCreation} ${daysSinceCreation === 1 ? 'day' : 'days'} ago`}
+									</p>
+								</CardContent>
+							</Card>
 
-			<FadeIn delay={0.4}>
-				<Card className="border-2">
-					<CardHeader>
-						<CardTitle>Project Details</CardTitle>
-					</CardHeader>
-					<CardContent className="space-y-4">
-						<div>
-							<h3 className="font-heading mb-2 font-semibold">
-								Description
-							</h3>
-							<p className="text-muted-foreground font-body">
-								{project.description}
-							</p>
-						</div>
-
-						<div className="border-t pt-4">
-							<h3 className="font-heading mb-2 font-semibold">
-								Project Information
-							</h3>
-							<dl className="grid grid-cols-2 gap-4 text-sm">
-								<div>
-									<dt className="text-muted-foreground">
-										Project ID
-									</dt>
-									<dd className="mt-1 font-mono text-xs">
-										{project.id}
-									</dd>
-								</div>
-								<div>
-									<dt className="text-muted-foreground">
+							<Card className="border-2">
+								<CardHeader>
+									<CardTitle className="flex items-center gap-2 text-lg">
+										<Clock className="text-primary h-5 w-5" />
 										Status
-									</dt>
-									<dd className="mt-1 capitalize">
+									</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<p className="font-heading text-2xl font-semibold capitalize">
 										{project.status}
-									</dd>
-								</div>
-							</dl>
+									</p>
+									<p className="text-muted-foreground mt-1 text-sm">
+										{project.status === 'active'
+											? 'Currently in progress'
+											: project.status === 'completed'
+												? 'Successfully completed'
+												: 'Archived and inactive'}
+									</p>
+								</CardContent>
+							</Card>
 						</div>
-					</CardContent>
-				</Card>
-			</FadeIn>
 
-			<FadeIn delay={0.45}>
-				<ProjectUsersCard
-					users={projectUsers}
-					isLoading={isLoadingUsers}
-					onAssignUser={() => setIsAssignUserDialogOpen(true)}
-					onUpdateRole={handleUpdateUserRole}
-					onRemoveUser={handleRemoveUser}
-					disabled={isUserOperating}
-				/>
+						<Card className="border-2">
+							<CardHeader>
+								<CardTitle>Project Details</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-4">
+								<div>
+									<h3 className="font-heading mb-2 font-semibold">
+										Description
+									</h3>
+									<p className="text-muted-foreground font-body">
+										{project.description}
+									</p>
+								</div>
+
+								<div className="border-t pt-4">
+									<h3 className="font-heading mb-2 font-semibold">
+										Project Information
+									</h3>
+									<dl className="grid grid-cols-2 gap-4 text-sm">
+										<div>
+											<dt className="text-muted-foreground">
+												Project ID
+											</dt>
+											<dd className="mt-1 font-mono text-xs">
+												{project.id}
+											</dd>
+										</div>
+										<div>
+											<dt className="text-muted-foreground">
+												Status
+											</dt>
+											<dd className="mt-1 capitalize">
+												{project.status}
+											</dd>
+										</div>
+									</dl>
+								</div>
+							</CardContent>
+						</Card>
+
+						<ProjectUsersCard
+							users={projectUsers}
+							isLoading={isLoadingUsers}
+							onAssignUser={() => setIsAssignUserDialogOpen(true)}
+							onUpdateRole={handleUpdateUserRole}
+							onRemoveUser={handleRemoveUser}
+							disabled={isUserOperating}
+						/>
+					</TabsContent>
+
+					<TabsContent value="kanban" className="pt-6">
+						<KanbanBoard
+							columns={taskColumns}
+							tasks={tasks}
+							isLoading={isLoadingKanban}
+							onCreateColumn={handleCreateColumn}
+							onUpdateColumn={handleUpdateColumn}
+							onDeleteColumn={handleDeleteColumn}
+							onCreateTask={handleCreateTask}
+							onUpdateTask={handleUpdateTask}
+							onDeleteTask={handleDeleteTask}
+							onMoveTask={handleMoveTask}
+						/>
+					</TabsContent>
+				</Tabs>
 			</FadeIn>
 
 			<FadeIn delay={0.5}>
@@ -450,6 +662,23 @@ export function ProjectDetailsPage() {
 				isSubmitting={isUserOperating}
 				availableUsers={availableUsers}
 				isLoadingUsers={isLoadingUsers}
+			/>
+
+			<TaskColumnDialog
+				open={isColumnDialogOpen}
+				onOpenChange={setIsColumnDialogOpen}
+				onSubmit={handleColumnSubmit}
+				column={editingColumn}
+				isSubmitting={isKanbanOperating}
+				nextOrderIndex={taskColumns.length}
+			/>
+
+			<TaskDialog
+				open={isTaskDialogOpen}
+				onOpenChange={setIsTaskDialogOpen}
+				onSubmit={handleTaskSubmit}
+				task={editingTask}
+				isSubmitting={isKanbanOperating}
 			/>
 		</div>
 	)

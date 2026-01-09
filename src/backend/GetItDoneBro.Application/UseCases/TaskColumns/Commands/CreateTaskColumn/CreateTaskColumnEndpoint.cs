@@ -21,9 +21,9 @@ public class CreateTaskColumnEndpoint : IApiEndpoint
 
     private static async Task<IResult> Handle(
         [FromBody] CreateTaskColumnCommand command,
-        IValidator<CreateTaskColumnCommand> validator,
-        ICreateTaskColumnHandler handler,
-        ILogger<CreateTaskColumnEndpoint> logger,
+        [FromServices] IValidator<CreateTaskColumnCommand> validator,
+        [FromServices] ICreateTaskColumnHandler handler,
+        [FromServices] ILogger<CreateTaskColumnEndpoint> logger,
         CancellationToken cancellationToken)
     {
         ValidationResult? validationResult = await validator.ValidateAsync(command, cancellationToken);

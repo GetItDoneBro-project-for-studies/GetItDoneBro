@@ -1,7 +1,6 @@
 using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.UseCases.Projects.Shared.Dtos;
 using GetItDoneBro.Application.UseCases.Projects.Shared.Routes;
-using GetItDoneBro.Application.UseCases.ProjectUsers.Queries.GetProjectUsers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

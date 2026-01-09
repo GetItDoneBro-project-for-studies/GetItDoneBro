@@ -28,7 +28,7 @@ internal sealed class UserProxy(
             return cachedUsers;
         }
 
-        var request = new Request(host: keycloakOptions.Value.Host, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users", uriKind: UriKind.Relative));
+        var request = new Request(host: keycloakOptions.Value.AuthServerUrl, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users", uriKind: UriKind.Relative));
         var users = await requestProxyService.GetJsonAsync<IEnumerable<User>>(request: request, cancellationToken: cancellationToken) ?? [];
 
         var usersList = users.ToList();
@@ -39,7 +39,7 @@ internal sealed class UserProxy(
 
     public async Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var request = new Request(host: keycloakOptions.Value.Host, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/{id}", uriKind: UriKind.Relative));
+        var request = new Request(host: keycloakOptions.Value.AuthServerUrl, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/{id}", uriKind: UriKind.Relative));
         try
         {
             var user = await requestProxyService.GetJsonAsync<User>(request: request, cancellationToken: cancellationToken);
@@ -58,7 +58,7 @@ internal sealed class UserProxy(
 
     public async Task<User?> TryGetUserAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var request = new Request(host: keycloakOptions.Value.Host, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/{id}", uriKind: UriKind.Relative));
+        var request = new Request(host: keycloakOptions.Value.AuthServerUrl, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/{id}", uriKind: UriKind.Relative));
         const int maxRetries = 3;
         const int delayMs = 200;
 
@@ -112,7 +112,7 @@ internal sealed class UserProxy(
 
     public async Task<Guid> AddUserAsync(KeyCloakUser user, CancellationToken cancellationToken = default)
     {
-        var request = new Request(host: keycloakOptions.Value.Host, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/", uriKind: UriKind.Relative), data: user);
+        var request = new Request(host: keycloakOptions.Value.AuthServerUrl, uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/", uriKind: UriKind.Relative), data: user);
         var response = await requestProxyService.PostAsync(request: request, cancellationToken: cancellationToken);
 
         switch (response.Code)
@@ -133,7 +133,7 @@ internal sealed class UserProxy(
                 }
                 logger.LogDebug(
                     message: "Użytkownik został utworzony, ale nie udało się pobrać jego identyfikatora. Request: {RequestUrl}, Payload: {@Payload}, ResponseHeaders: {@Headers}",
-                    $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/",
+                    $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/",
                     user,
                     response.Headers
                 );
@@ -143,7 +143,7 @@ internal sealed class UserProxy(
             case (int)HttpStatusCode.Conflict:
                 logger.LogDebug(
                     message: "Użytkownik o podanej nazwie lub emailu już istnieje. Request: {RequestUrl}, Payload: {@Payload}, Response: {ResponseValue}",
-                    $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/",
+                    $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/",
                     user,
                     response.Value
                 );
@@ -152,7 +152,7 @@ internal sealed class UserProxy(
             case (int)HttpStatusCode.BadRequest:
                 logger.LogDebug(
                     message: "Podane dane użytkownika są nieprawidłowe. Request: {RequestUrl}, Payload: {@Payload}, Response: {ResponseValue}",
-                    $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/",
+                    $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/",
                     user,
                     response.Value
                 );
@@ -162,7 +162,7 @@ internal sealed class UserProxy(
                 logger.LogError(
                     message: "Wystąpił błąd podczas tworzenia użytkownika. Kod: {StatusCode}, Request: {RequestUrl}, Payload: {@Payload}, Response: {ResponseValue}",
                     response.Code,
-                    $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/",
+                    $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/",
                     user,
                     response.Value
                 );
@@ -178,7 +178,7 @@ internal sealed class UserProxy(
             var actionStrings = actions.Select(a => a.ToString());
 
             var request = new Request(
-                host: keycloakOptions.Value.Host,
+                host: keycloakOptions.Value.AuthServerUrl,
                 uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}/execute-actions-email", uriKind: UriKind.Relative),
                 data: actionStrings
             );
@@ -191,7 +191,7 @@ internal sealed class UserProxy(
                     message: "Nie udało się wysłać emaila z akcjami do użytkownika o ID {UserId}. Kod odpowiedzi: {StatusCode}, Request: {RequestUrl}, Payload: {@Payload}, Response: {ResponseValue}",
                     userId,
                     response.Code,
-                    $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}/execute-actions-email",
+                    $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}/execute-actions-email",
                     actionStrings,
                     response.Value
                 );
@@ -208,7 +208,7 @@ internal sealed class UserProxy(
                 userId,
                 ex.Message,
                 ex.StackTrace,
-                $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}/execute-actions-email"
+                $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}/execute-actions-email"
             );
 
             logger.LogError(exception: ex, message: "Błąd krytyczny podczas wysyłania emaila z akcjami do użytkownika o ID {UserId}.", userId);
@@ -231,7 +231,7 @@ internal sealed class UserProxy(
             );
 
             var request = new Request(
-                host: keycloakOptions.Value.Host,
+                host: keycloakOptions.Value.AuthServerUrl,
                 uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}", uriKind: UriKind.Relative),
                 data: updatedUser
             );
@@ -244,7 +244,7 @@ internal sealed class UserProxy(
                     message: "Nie udało się wyłączyć konta użytkownika o ID {UserId}. Kod odpowiedzi: {StatusCode}, Request: {RequestUrl}, Response: {ResponseValue}",
                     userId,
                     response.Code,
-                    $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}",
+                    $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}",
                     response.Value
                 );
 
@@ -262,7 +262,7 @@ internal sealed class UserProxy(
                 userId,
                 ex.Message,
                 ex.StackTrace,
-                $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}"
+                $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}"
             );
             logger.LogError(exception: ex, message: "Błąd krytyczny podczas wyłączania użytkownika o ID {UserId}.", userId);
             throw new UserException(propertyName: "Użytkownik", errorMessage: "Wystąpił błąd podczas wyłączania użytkownika.");
@@ -274,7 +274,7 @@ internal sealed class UserProxy(
         try
         {
             var request = new Request(
-                host: keycloakOptions.Value.Host,
+                host: keycloakOptions.Value.AuthServerUrl,
                 uri: new Uri(uriString: $"/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}", uriKind: UriKind.Relative)
             );
 
@@ -286,7 +286,7 @@ internal sealed class UserProxy(
                     message: "Nie udało się usunąć użytkownika o ID {UserId}. Kod odpowiedzi: {StatusCode}, Request: {RequestUrl}, Response: {ResponseValue}",
                     userId,
                     response.Code,
-                    $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}",
+                    $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}",
                     response.Value
                 );
                 throw new UserException(propertyName: "Użytkownik", errorMessage: "Wystąpił błąd podczas usuwania użytkownika.");
@@ -302,7 +302,7 @@ internal sealed class UserProxy(
                 userId,
                 ex.Message,
                 ex.StackTrace,
-                $"{keycloakOptions.Value.Host}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}"
+                $"{keycloakOptions.Value.AuthServerUrl}/admin/realms/{keycloakOptions.Value.Realm}/users/{userId}"
             );
             logger.LogError(exception: ex, message: "Błąd krytyczny podczas usuwania użytkownika o ID {UserId}.", userId);
             throw new UserException(propertyName: "Użytkownik", errorMessage: "Wystąpił błąd podczas usuwania użytkownika.");

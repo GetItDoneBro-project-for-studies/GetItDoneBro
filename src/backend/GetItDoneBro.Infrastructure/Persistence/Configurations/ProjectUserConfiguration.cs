@@ -8,17 +8,16 @@ internal sealed class ProjectUserConfiguration : IEntityTypeConfiguration<Projec
 {
     public void Configure(EntityTypeBuilder<ProjectUser> builder)
     {
-        builder.Property(pu => pu.KeycloakId)
-            .HasMaxLength(255)
+        builder.Property(pu => pu.UserId)
             .IsRequired();
 
         builder.Property(pu => pu.Role)
             .IsRequired();
 
-        builder.HasIndex(pu => new { pu.ProjectId, pu.KeycloakId })
+        builder.HasIndex(pu => new { pu.ProjectId, pu.UserId })
             .IsUnique();
 
-        builder.HasIndex(pu => pu.KeycloakId);
+        builder.HasIndex(pu => pu.UserId);
 
         builder.HasOne(pu => pu.Project)
             .WithMany(p => p.ProjectUsers)

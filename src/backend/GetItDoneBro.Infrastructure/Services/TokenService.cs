@@ -81,7 +81,7 @@ public sealed class TokenService(
             return cachedEndpoint;
         }
 
-        var wellKnownUrl = $"{options.Value.Host}/realms/{options.Value.Realm}/.well-known/openid-configuration";
+        var wellKnownUrl = $"{options.Value.AuthServerUrl}/realms/{options.Value.Realm}/.well-known/openid-configuration";
 
         try
         {
@@ -121,7 +121,7 @@ public sealed class TokenService(
             using var formData = new FormUrlEncodedContent(
                 new[]
                 {
-                    new KeyValuePair<string, string>(key: "client_id", value: options.Value.ClientId), new KeyValuePair<string, string>(key: "client_secret", value: options.Value.ClientSecret), new KeyValuePair<string, string>(key: "grant_type", value: "client_credentials")
+                    new KeyValuePair<string, string>(key: "client_id", value: options.Value.Resource), new KeyValuePair<string, string>(key: "client_secret", value: options.Value.Credentials.Secret), new KeyValuePair<string, string>(key: "grant_type", value: "client_credentials")
                 }
             );
 

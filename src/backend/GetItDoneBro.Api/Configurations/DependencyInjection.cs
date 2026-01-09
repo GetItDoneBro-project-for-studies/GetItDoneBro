@@ -18,6 +18,7 @@ public static class DependencyInjection
     {
         builder.Host.CustomConfigureAppConfiguration();
         builder.AddServiceDefaults();
+        builder.ConfigureOptions();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddApplication();
         builder.RegisterDatabase();

@@ -1,13 +1,13 @@
 using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Application.Exceptions;
-using GetItDoneBro.Application.UseCases.Projects.Commands.AssignUserToProject;
 using GetItDoneBro.Domain.Entities;
 using GetItDoneBro.Domain.Enums;
+using GetItDoneBro.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace GetItDoneBro.Application.UseCases.ProjectUsers.Commands.AssignUserToProject;
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.AssignUserToProject;
 
 public interface IAssignUserToProjectHandler
 {
@@ -17,7 +17,7 @@ public interface IAssignUserToProjectHandler
 public sealed class AssignUserToProjectHandler(
     IRepository repository,
     IProjectUsersRepository projectUsersRepository,
-    ICurrentUserService currentUserService,
+    IUserResolver userResolver,
     ILogger<AssignUserToProjectHandler> logger)
     : IAssignUserToProjectHandler
 {
@@ -34,19 +34,19 @@ public sealed class AssignUserToProjectHandler(
         }
 
         var currentUserRole = await projectUsersRepository.GetUserRoleAsync(
-            command.ProjectId, currentUserService.KeycloakId!, cancellationToken);
+            command.ProjectId, userResolver.UserId, cancellationToken);
 
         if (currentUserRole != ProjectRole.Admin)
         {
             throw new InsufficientPermissionsException("przypisywanie uzytkownikow do projektu");
         }
 
-        if (await projectUsersRepository.IsUserAssignedAsync(command.ProjectId, command.KeycloakId, cancellationToken))
+        if (await projectUsersRepository.IsUserAssignedAsync(command.ProjectId, Guid.Parse(command.KeycloakId), cancellationToken))
         {
             throw new UserAlreadyAssignedException(command.ProjectId, command.KeycloakId);
         }
 
-        var projectUser = ProjectUser.Create(command.ProjectId, command.KeycloakId, command.Role);
+        var projectUser = ProjectUser.Create(command.ProjectId, Guid.Parse(command.KeycloakId), command.Role);
         await repository.ProjectUsers.AddAsync(projectUser, cancellationToken);
         await repository.SaveChangesAsync(cancellationToken);
 

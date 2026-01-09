@@ -22,9 +22,9 @@ public class MoveTaskToColumnEndpoint : IApiEndpoint
     private static async Task<IResult> Handle(
         Guid id,
         [FromBody] MoveTaskToColumnRequest request,
-        IValidator<MoveTaskToColumnCommand> validator,
-        IMoveTaskToColumnHandler handler,
-        ILogger<MoveTaskToColumnEndpoint> logger,
+        [FromServices] IValidator<MoveTaskToColumnCommand> validator,
+        [FromServices] IMoveTaskToColumnHandler handler,
+        [FromServices] ILogger<MoveTaskToColumnEndpoint> logger,
         CancellationToken cancellationToken)
     {
         var command = new MoveTaskToColumnCommand(id, request.TaskColumnId);

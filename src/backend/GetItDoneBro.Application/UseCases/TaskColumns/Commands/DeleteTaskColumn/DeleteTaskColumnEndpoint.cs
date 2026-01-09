@@ -2,6 +2,7 @@ using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.UseCases.TaskColumns.Shared.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GetItDoneBro.Application.UseCases.TaskColumns.Commands.DeleteTaskColumn;
@@ -18,8 +19,8 @@ public class DeleteTaskColumnEndpoint : IApiEndpoint
 
     private static async Task<IResult> Handle(
         Guid id,
-        IDeleteTaskColumnHandler handler,
-        ILogger<DeleteTaskColumnEndpoint> logger,
+        [FromServices] IDeleteTaskColumnHandler handler,
+        [FromServices] ILogger<DeleteTaskColumnEndpoint> logger,
         CancellationToken cancellationToken)
     {
         var command = new DeleteTaskColumnCommand(id);

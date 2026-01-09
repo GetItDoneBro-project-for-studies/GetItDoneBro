@@ -1,11 +1,11 @@
 using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Application.Exceptions;
-using GetItDoneBro.Application.UseCases.Projects.Commands.UpdateUserRole;
 using GetItDoneBro.Domain.Enums;
+using GetItDoneBro.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace GetItDoneBro.Application.UseCases.ProjectUsers.Commands.UpdateUserRole;
+namespace GetItDoneBro.Application.UseCases.Projects.Commands.UpdateUserRole;
 
 public interface IUpdateUserRoleHandler
 {
@@ -15,7 +15,7 @@ public interface IUpdateUserRoleHandler
 public sealed class UpdateUserRoleHandler(
     IRepository repository,
     IProjectUsersRepository projectUsersRepository,
-    ICurrentUserService currentUserService,
+    IUserResolver userResolver,
     ILogger<UpdateUserRoleHandler> logger)
     : IUpdateUserRoleHandler
 {
@@ -26,14 +26,14 @@ public sealed class UpdateUserRoleHandler(
             command.KeycloakId, command.ProjectId, command.Role);
 
         var currentUserRole = await projectUsersRepository.GetUserRoleAsync(
-            command.ProjectId, currentUserService.KeycloakId!, cancellationToken);
+            command.ProjectId, userResolver.UserId, cancellationToken);
 
         if (currentUserRole != ProjectRole.Admin)
         {
             throw new InsufficientPermissionsException("zmiana roli uzytkownika w projekcie");
         }
 
-        var projectUser = await projectUsersRepository.GetAsync(command.ProjectId, command.KeycloakId, cancellationToken) ?? 
+        var projectUser = await projectUsersRepository.GetAsync(command.ProjectId, Guid.Parse(command.KeycloakId), cancellationToken) ??
                           throw new UserNotAssignedException(command.ProjectId, command.KeycloakId);
 
         if (projectUser.Role == ProjectRole.Admin && command.Role != ProjectRole.Admin)

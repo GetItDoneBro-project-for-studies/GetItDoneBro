@@ -8,24 +8,24 @@ public class ProjectUser : Entity, IAuditableEntity
 {
     public ProjectUser() { }
 
-    private ProjectUser(Guid projectId, string keycloakId, ProjectRole role)
+    private ProjectUser(Guid projectId, Guid userId, ProjectRole role)
     {
         ProjectId = projectId;
-        KeycloakId = keycloakId;
+        UserId = userId;
         Role = role;
     }
 
     public Guid ProjectId { get; private set; }
-    public string KeycloakId { get; private set; } = string.Empty;
+    public Guid UserId { get; private set; }
     public ProjectRole Role { get; private set; }
     public DateTime CreatedAtUtc { get; set; }
     public DateTime? UpdatedAtUtc { get; set; }
 
     public Project Project { get; private set; } = null!;
 
-    public static ProjectUser Create(Guid projectId, string keycloakId, ProjectRole role)
+    public static ProjectUser Create(Guid projectId, Guid userId, ProjectRole role)
     {
-        return new ProjectUser(projectId, keycloakId, role);
+        return new ProjectUser(projectId, userId, role);
     }
 
     public void SetRole(ProjectRole role)

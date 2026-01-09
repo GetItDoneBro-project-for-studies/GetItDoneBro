@@ -10,29 +10,29 @@ public sealed class ProjectUsersRepository(GetItDoneBroDbContext dbContext) : IP
 {
     public async Task<ProjectUser?> GetAsync(
         Guid projectId,
-        string keycloakId,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         return await dbContext.ProjectUsers
-            .FirstOrDefaultAsync(pu => pu.ProjectId == projectId && pu.KeycloakId == keycloakId, cancellationToken);
+            .FirstOrDefaultAsync(pu => pu.ProjectId == projectId && pu.UserId == userId, cancellationToken);
     }
 
     public async Task<bool> IsUserAssignedAsync(
         Guid projectId,
-        string keycloakId,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         return await dbContext.ProjectUsers
-            .AnyAsync(pu => pu.ProjectId == projectId && pu.KeycloakId == keycloakId, cancellationToken);
+            .AnyAsync(pu => pu.ProjectId == projectId && pu.UserId == userId, cancellationToken);
     }
 
     public async Task<ProjectRole?> GetUserRoleAsync(
         Guid projectId,
-        string keycloakId,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var projectUser = await dbContext.ProjectUsers
-            .FirstOrDefaultAsync(pu => pu.ProjectId == projectId && pu.KeycloakId == keycloakId, cancellationToken);
+            .FirstOrDefaultAsync(pu => pu.ProjectId == projectId && pu.UserId == userId, cancellationToken);
 
         return projectUser?.Role;
     }

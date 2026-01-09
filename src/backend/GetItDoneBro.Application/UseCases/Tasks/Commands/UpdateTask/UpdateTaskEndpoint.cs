@@ -27,9 +27,9 @@ public class UpdateTaskEndpoint : IApiEndpoint
     private static async Task<IResult> Handle(
         Guid id,
         [FromBody] UpdateTaskRequest request,
-        IValidator<UpdateTaskCommand> validator,
-        IUpdateTaskHandler handler,
-        ILogger<UpdateTaskEndpoint> logger,
+        [FromServices] IValidator<UpdateTaskCommand> validator,
+        [FromServices] IUpdateTaskHandler handler,
+        [FromServices] ILogger<UpdateTaskEndpoint> logger,
         CancellationToken cancellationToken)
     {
         var command = new UpdateTaskCommand(

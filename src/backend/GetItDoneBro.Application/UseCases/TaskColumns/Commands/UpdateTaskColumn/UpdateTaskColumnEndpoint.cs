@@ -22,9 +22,9 @@ public class UpdateTaskColumnEndpoint : IApiEndpoint
     private static async Task<IResult> Handle(
         Guid id,
         [FromBody] UpdateTaskColumnRequest request,
-        IValidator<UpdateTaskColumnCommand> validator,
-        IUpdateTaskColumnHandler handler,
-        ILogger<UpdateTaskColumnEndpoint> logger,
+        [FromServices] IValidator<UpdateTaskColumnCommand> validator,
+        [FromServices] IUpdateTaskColumnHandler handler,
+        [FromServices] ILogger<UpdateTaskColumnEndpoint> logger,
         CancellationToken cancellationToken)
     {
         var command = new UpdateTaskColumnCommand(id, request.Name, request.OrderIndex);

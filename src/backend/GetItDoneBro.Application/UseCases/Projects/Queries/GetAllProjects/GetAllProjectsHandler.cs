@@ -19,8 +19,7 @@ public sealed class GetAllProjectsHandler(
 
         if (userId.HasValue)
         {
-            var userIdString = userId.Value.ToString();
-            query = query.Where(p => p.ProjectUsers.Any(pu => pu.KeycloakId == userIdString));
+            query = query.Where(p => p.ProjectUsers.Any(pu => pu.UserId == userId.Value));
         }
 
         var projects = await query.ToListAsync(cancellationToken);

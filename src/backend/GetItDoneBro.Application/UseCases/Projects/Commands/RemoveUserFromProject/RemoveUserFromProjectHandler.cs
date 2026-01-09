@@ -3,6 +3,7 @@ using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Application.Exceptions;
 using GetItDoneBro.Application.UseCases.Projects.Commands.RemoveUserFromProject;
 using GetItDoneBro.Domain.Enums;
+using GetItDoneBro.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace GetItDoneBro.Application.UseCases.ProjectUsers.Commands.RemoveUserFromProject;
@@ -15,7 +16,7 @@ public interface IRemoveUserFromProjectHandler
 public sealed class RemoveUserFromProjectHandler(
     IRepository repository,
     IProjectUsersRepository projectUsersRepository,
-    ICurrentUserService currentUserService,
+    IUserResolver userResolver,
     ILogger<RemoveUserFromProjectHandler> logger)
     : IRemoveUserFromProjectHandler
 {
@@ -26,33 +27,35 @@ public sealed class RemoveUserFromProjectHandler(
             command.KeycloakId, command.ProjectId);
 
         var currentUserRole = await projectUsersRepository.GetUserRoleAsync(
-            command.ProjectId, currentUserService.KeycloakId!, cancellationToken);
+            command.ProjectId, userResolver.UserId, cancellationToken);
 
         if (currentUserRole != ProjectRole.Admin)
         {
             throw new InsufficientPermissionsException("usuwanie uzytkownikow z projektu");
         }
 
-        var projectUser = await projectUsersRepository.GetAsync(command.ProjectId, command.KeycloakId, cancellationToken);
-        if (projectUser is null)
+        var projectUser = await projectUsersRepository.GetAsync(command.ProjectId, Guid.Parse(command.KeycloakId), cancellationToken);
+        if (projectUser is not null)
+        {
+            if (projectUser.Role == ProjectRole.Admin)
+            {
+                int adminCount = await projectUsersRepository.GetAdminCountAsync(command.ProjectId, cancellationToken);
+                if (adminCount <= 1)
+                {
+                    throw new CannotRemoveLastAdminException(command.ProjectId);
+                }
+            }
+
+            repository.ProjectUsers.Remove(projectUser);
+            await repository.SaveChangesAsync(cancellationToken);
+
+            logger.LogInformation(
+                "User {KeycloakId} successfully removed from project {ProjectId}",
+                command.KeycloakId, command.ProjectId);
+        }
+        else
         {
             throw new UserNotAssignedException(command.ProjectId, command.KeycloakId);
         }
-
-        if (projectUser.Role == ProjectRole.Admin)
-        {
-            int adminCount = await projectUsersRepository.GetAdminCountAsync(command.ProjectId, cancellationToken);
-            if (adminCount <= 1)
-            {
-                throw new CannotRemoveLastAdminException(command.ProjectId);
-            }
-        }
-
-        repository.ProjectUsers.Remove(projectUser);
-        await repository.SaveChangesAsync(cancellationToken);
-
-        logger.LogInformation(
-            "User {KeycloakId} successfully removed from project {ProjectId}",
-            command.KeycloakId, command.ProjectId);
     }
 }

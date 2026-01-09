@@ -3,6 +3,7 @@ using GetItDoneBro.Application.UseCases.Tasks.Shared.Dtos;
 using GetItDoneBro.Application.UseCases.Tasks.Shared.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GetItDoneBro.Application.UseCases.Tasks.Queries.GetTasksByProject;
@@ -17,8 +18,8 @@ public class GetTasksByProjectEndpoint : IApiEndpoint
 
     private static async Task<IResult> Handle(
         Guid projectId,
-        IGetTasksByProjectHandler handler,
-        ILogger<GetTasksByProjectEndpoint> logger,
+        [FromServices] IGetTasksByProjectHandler handler,
+        [FromServices] ILogger<GetTasksByProjectEndpoint> logger,
         CancellationToken cancellationToken)
     {
         IEnumerable<TaskDto> tasks = await handler.HandleAsync(projectId, cancellationToken);

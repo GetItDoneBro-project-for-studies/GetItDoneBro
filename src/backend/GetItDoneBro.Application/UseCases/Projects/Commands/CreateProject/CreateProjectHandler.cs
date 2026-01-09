@@ -3,6 +3,7 @@ using GetItDoneBro.Application.Common.Interfaces.Services;
 using GetItDoneBro.Application.Exceptions;
 using GetItDoneBro.Domain.Entities;
 using GetItDoneBro.Domain.Enums;
+using GetItDoneBro.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace GetItDoneBro.Application.UseCases.Projects.Commands.CreateProject;
@@ -15,7 +16,7 @@ public interface ICreateProjectHandler
 public sealed class CreateProjectHandler(
     IProjectsRepository projects,
     IRepository repository,
-    ICurrentUserService currentUserService,
+    IUserResolver userResolver,
     ILogger<CreateProjectHandler> logger)
     : ICreateProjectHandler
 {
@@ -37,7 +38,7 @@ public sealed class CreateProjectHandler(
 
         var projectUser = ProjectUser.Create(
             project.Id,
-            currentUserService.KeycloakId!,
+            userResolver.UserId,
             ProjectRole.Admin);
         await repository.ProjectUsers.AddAsync(projectUser, cancellationToken);
 
@@ -45,7 +46,7 @@ public sealed class CreateProjectHandler(
 
         logger.LogInformation(
             "Created project with ID {ProjectId}, creator {KeycloakId} assigned as Admin",
-            project.Id, currentUserService.KeycloakId);
+            project.Id, userResolver.UserId);
 
         return project.Id;
     }

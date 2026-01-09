@@ -27,9 +27,9 @@ public class CreateTaskEndpoint : IApiEndpoint
 
     private static async Task<IResult> Handle(
         [FromBody] CreateTaskCommand command,
-        IValidator<CreateTaskCommand> validator,
-        ICreateTaskHandler handler,
-        ILogger<CreateTaskEndpoint> logger,
+        [FromServices] IValidator<CreateTaskCommand> validator,
+        [FromServices] ICreateTaskHandler handler,
+        [FromServices] ILogger<CreateTaskEndpoint> logger,
         CancellationToken cancellationToken)
     {
         ValidationResult? validationResult = await validator.ValidateAsync(command, cancellationToken);

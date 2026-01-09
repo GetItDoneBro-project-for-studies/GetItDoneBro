@@ -1,5 +1,6 @@
 using GetItDoneBro.Application.Common.Interfaces;
 using GetItDoneBro.Application.Common.Interfaces.Services;
+using GetItDoneBro.Domain.Interfaces;
 using GetItDoneBro.Infrastructure.Persistence;
 using GetItDoneBro.Infrastructure.Persistence.Interceptors;
 using GetItDoneBro.Infrastructure.Proxies.KeyCloak;
@@ -20,7 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IRepository>(sp => sp.GetRequiredService<GetItDoneBroDbContext>());
         services.AddScoped<IProjectsRepository, ProjectsRepository>();
         services.AddScoped<IProjectUsersRepository, ProjectUsersRepository>();
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IUserResolver, UserResolverService>();
         services.AddSingleton<AuditableInterceptor>();
         services.AddHttpContextAccessor();
 
